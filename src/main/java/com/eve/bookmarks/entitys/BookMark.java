@@ -1,27 +1,42 @@
 package com.eve.bookmarks.entitys;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
  * 书签实体类
  */
+@Entity
 public class BookMark implements Serializable {
     private String id;
     private String parentId;
-    private String index;
+    private String idx;
     private String url;
     private String title;
     private String dateAdded;
     private String dateGroupModified;
+    @Transient
+    private String remark;
 
-    private String mysqlId;
+
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long mysqlId;
+    @Column
     private String mongoId;
 
     /**
      * 标识位 1正常 0删除 2新增
      */
     private int state = 1;
+    public String getRemark() {
+        return remark;
+    }
 
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
     public int getState() {
         return state;
     }
@@ -30,11 +45,11 @@ public class BookMark implements Serializable {
         this.state = state;
     }
 
-    public String getMysqlId() {
+    public Long getMysqlId() {
         return mysqlId;
     }
 
-    public void setMysqlId(String mysqlId) {
+    public void setMysqlId(Long mysqlId) {
         this.mysqlId = mysqlId;
     }
 
@@ -62,12 +77,12 @@ public class BookMark implements Serializable {
         this.parentId = parentId;
     }
 
-    public String getIndex() {
-        return index;
+    public String getIdx() {
+        return idx;
     }
 
-    public void setIndex(String index) {
-        this.index = index;
+    public void setIdx(String idx) {
+        this.idx = idx;
     }
 
     public String getUrl() {
