@@ -2,34 +2,73 @@ package com.eve.bookmarks.entitys;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 书签实体类
  */
 @Entity
 public class BookMark implements Serializable {
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long mysqlId;
+
+    @Column(length = 10)
     private String id;
+    @Column(length = 10)
     private String parentId;
+    @Column(length = 10)
     private String idx;
+    @Column(length = 155)
     private String url;
     private String title;
+    @Column(length = 20)
     private String dateAdded;
+    @Column(length = 20)
     private String dateGroupModified;
     @Transient
     private String remark;
 
+    @Column(length = 10)
+    private Long parentMysqlId;
 
-
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long mysqlId;
-    @Column
+    @Column(length = 20)
     private String mongoId;
 
     /**
      * 标识位 1正常 0删除 2新增
      */
+    @Column(length = 2)
     private int state = 1;
+    private Long crateTime;
+    private Long updateTime;
+    @Column(length = 40)
+    private String uid;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public Long getCrateTime() {
+        return crateTime;
+    }
+
+    public void setCrateTime(Long crateTime) {
+        this.crateTime = crateTime;
+    }
+
+    public Long getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Long updateTime) {
+        this.updateTime = updateTime;
+    }
+
     public String getRemark() {
         return remark;
     }
@@ -116,4 +155,14 @@ public class BookMark implements Serializable {
     public void setDateGroupModified(String dateGroupModified) {
         this.dateGroupModified = dateGroupModified;
     }
+
+    public Long getParentMysqlId() {
+        return parentMysqlId;
+    }
+
+    public void setParentMysqlId(Long parentMysqlId) {
+        this.parentMysqlId = parentMysqlId;
+    }
+
+
 }
