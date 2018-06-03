@@ -6,6 +6,7 @@ import com.eve.bookmarks.dao.BookMarkRepository;
 import com.eve.bookmarks.entitys.BookMark;
 import com.eve.bookmarks.entitys.BookMarkMongo;
 import com.eve.bookmarks.service.BookMarkService;
+import com.eve.bookmarks.utils.Constants;
 import com.eve.bookmarks.utils.IDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -30,12 +31,15 @@ public class BookMarkServiceImpl implements BookMarkService {
     public BookMark get(Long mysqlId) {
         return bookMarkRepository.findById(mysqlId).get();
     }
-
+    @Override
+    public BookMarkMongo getBookMarktree(String uid) {
+        return mongoTemplate.findById(uid,BookMarkMongo.class);
+    }
     @Override
     public void saveBookMarks(Object node, String uid) {
         nodeToListModel(node,uid);
         BookMarkMongo bookMarkMongo = new BookMarkMongo(node.toString());
-        mongoTemplate.save(bookMarkMongo,"bookmark");
+        mongoTemplate.save(bookMarkMongo,Constants.BOOK_MARK_MONGODB_NAME);
         System.out.println("mongodb生成id:"+bookMarkMongo.getId());
 
     }
