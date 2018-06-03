@@ -30,22 +30,23 @@ public class BkMarkController {
     private BookMarkService bookMarkService;
     @Autowired
     private UserService userService;
-    @RequestMapping(value = "/get/{uid}", method = RequestMethod.GET, consumes = "application/json")
+    @RequestMapping(value = "/{uid}", method = RequestMethod.GET, consumes = "application/json")
     public ResponseEntity<BookMarkMongo> queryBookMarkById(@PathVariable String uid) {
         User user = userService.findByUid(uid);
         BookMarkMongo bookMarkMongo =bookMarkService.getBookMarktree(user.getBookmarkMongoId());
         return ResponseEntity.ok(bookMarkMongo);
     }
 
-    @RequestMapping(value = "/put/{uid}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{uid}", method = RequestMethod.POST)
     public Result synBookMarks(@PathVariable String uid, @RequestParam("bookmarks") String bookmarks, HttpServletRequest httpServletRequest) {
+        User user = userService.findByUid(uid);
         JSONObject jsonObject = JSONObject.parseObject(bookmarks);
-        bookMarkService.saveBookMarks(jsonObject.get("data"),"jiangchunyang");
+        bookMarkService.saveBookMarks(jsonObject.get("data"),uid);
         return new Result(0, "success");
     }
 
     @RequestMapping(value = "/hello")
     public String hello() {
-        return "hello worldsdd";
+        return "hello world！";
     }
 }

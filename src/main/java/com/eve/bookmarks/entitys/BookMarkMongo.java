@@ -15,6 +15,11 @@ public class BookMarkMongo {
         this.value = value;
     }
 
+    public BookMarkMongo(String id, String value) {
+        this.id = id;
+        this.value = value;
+    }
+
     public String getId() {
         return id;
     }

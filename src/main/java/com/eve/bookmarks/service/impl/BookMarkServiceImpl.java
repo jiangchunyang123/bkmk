@@ -40,8 +40,6 @@ public class BookMarkServiceImpl implements BookMarkService {
         nodeToListModel(node,uid);
         BookMarkMongo bookMarkMongo = new BookMarkMongo(node.toString());
         mongoTemplate.save(bookMarkMongo,Constants.BOOK_MARK_MONGODB_NAME);
-        System.out.println("mongodb生成id:"+bookMarkMongo.getId());
-
     }
 
     /**
