@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>计划时刻表哦</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="http://localhost:8090/js/bootstrap-datetimepicker.js"></script>
+
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script src="http://localhost:8090/js/schList.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="http://www.bootcss.com/p/buttons/css/buttons.css">
+    <link rel="stylesheet" href="http://localhost:8090/css/bootstrap-datetimepicker.css">
+
+    <style>
+        .timeline {
+            list-style: none;
+            /* padding: 20px 0 20px;*/
+            position: relative;
+        }
+
+        .timeline:before {
+            top: 0;
+            bottom: 0;
+            position: absolute;
+            content: " ";
+            width: 3px;
+            background-color: #eeeeee;
+            left: 50%;
+            margin-left: -1.5px;
+        }
+
+        .timeline > li {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timeline > li:before,
+        .timeline > li:after {
+            content: " ";
+            display: table;
+        }
+
+        .timeline > li:after {
+            clear: both;
+        }
+
+        .timeline > li:before,
+        .timeline > li:after {
+            content: " ";
+            display: table;
+        }
+
+        .timeline > li:after {
+            clear: both;
+        }
+
+        .timeline > li > .timeline-panel {
+            width: 40%;
+            float: left;
+            border: 1px solid #d4d4d4;
+            border-radius: 2px;
+            padding: 20px;
+            position: relative;
+            -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+        }
+
+        .timeline > li > .timeline-panel:before {
+            position: absolute;
+            top: 26px;
+            right: -15px;
+            display: inline-block;
+            border-top: 15px solid transparent;
+            border-left: 15px solid #ccc;
+            border-right: 0 solid #ccc;
+            border-bottom: 15px solid transparent;
+            content: " ";
+        }
+
+        .timeline > li > .timeline-panel:after {
+            position: absolute;
+            top: 27px;
+            right: -14px;
+            display: inline-block;
+            border-top: 14px solid transparent;
+            border-left: 14px solid #fff;
+            border-right: 0 solid #fff;
+            border-bottom: 14px solid transparent;
+            content: " ";
+        }
+
+        .timeline > li > .timeline-badge {
+            color: #fff;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            font-size: 1.4em;
+            text-align: center;
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            margin-left: -25px;
+            background-color: #999999;
+            z-index: 100;
+            border-top-right-radius: 50%;
+            border-top-left-radius: 50%;
+            border-bottom-right-radius: 50%;
+            border-bottom-left-radius: 50%;
+        }
+
+        .timeline > li.timeline-inverted > .timeline-panel {
+            float: right;
+        }
+
+        .timeline > li.timeline-inverted > .timeline-panel:before {
+            border-left-width: 0;
+            border-right-width: 15px;
+            left: -15px;
+            right: auto;
+        }
+
+        .timeline > li.timeline-inverted > .timeline-panel:after {
+            border-left-width: 0;
+            border-right-width: 14px;
+            left: -14px;
+            right: auto;
+        }
+
+        .timeline-badge.primary {
+            background-color: #2e6da4 !important;
+        }
+
+        .timeline-badge.success {
+            background-color: #3f903f !important;
+        }
+
+        .timeline-badge.warning {
+            background-color: #f0ad4e !important;
+        }
+
+        .timeline-badge.danger {
+            background-color: #d9534f !important;
+        }
+
+        .timeline-badge.info {
+            background-color: #5bc0de !important;
+        }
+
+        .timeline-title {
+            margin-top: 0;
+            color: inherit;
+        }
+
+        .timeline-body > p,
+        .timeline-body > ul {
+            margin-bottom: 0;
+        }
+
+        .timeline-body > p + p {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">计划列表</a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+                <li class="newPlan"><a href="#">新增计划</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="row schListDiv">
+        <div class="col-sm-6">
+
+            <div class="page-header">
+                <h1 id="timeline">Timeline</h1>
+            </div>
+            <ul class="timeline">
+                <li>
+                    <div class="timeline-badge">
+                        <i class="glyphicon glyphicon-check"></i>
+                    </div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">Mussum ipsum cacilds</h4>
+                            <p>
+                                <small class="text-muted"><i class="glyphicon glyphicon-time"></i> 11 hours ago via
+                                    Twitter
+                                </small>
+                            </p>
+                        </div>
+                        <div class="timeline-body">
+                            <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá </p>
+                            <hr>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary btn-sm">
+                                    <span class="glyphicon glyphicon-ok"></span> 打卡
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="timeline-inverted">
+                    <div class="timeline-badge success"><i class="glyphicon glyphicon-thumbs-up"></i></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">Mussum ipsum cacilds</h4>
+                        </div>
+                        <div class="timeline-body">
+                            <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois
+                                divoltis porris, paradis. Paisis, filhis, espiritis santis. .</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="timeline-badge">
+                    <div class="timeline-badge danger"><i class="glyphicon glyphicon-thumbs-down"></i></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">Mussum ipsum cacilds</h4>
+                        </div>
+                        <div class="timeline-body">
+                            <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois
+                                divoltis porris, paradis. Paisis, filhis, espiritis santis. .</p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-6">
+            <a href="http://www.bootcss.com/" class="button button-primary button-small">Go</a>
+            <a href="http://www.bootcss.com/"
+               class="button button-highlight button-pill button-large">Go</a>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="detail">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新增计划</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group ">
+
+                        <label for="title" class="col-sm-3 control-label">标题</label>
+                        <div class="col-sm-9">
+                            <input type="title" class="form-control" id="title" placeholder="请输入计划标题">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstDeadLine" class="col-sm-3 control-label">最后完成期限</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" value="2012-05-15 21:05" id="firstDeadLine"
+                                   data-date-format="yyyy-mm-dd hh:ii">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="title" class="col-sm-3 control-label">计划间隔</label>
+                        <div class="col-sm-2">
+                            <input type="title" class="form-control" id="scheduleNum" placeholder="间隔">
+                        </div>
+                        <div class="dropdown col-sm-7">
+                            <label class="radio-inline">
+                                <input type="radio" name="optionsRadiosinline" id="optionsRadios3" value="option1" checked>年
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="optionsRadiosinline" id="optionsRadios4"  value="option2">月
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="optionsRadiosinline" id="optionsRadios5"  value="option2">日
+                            </label>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</body>
+</html>

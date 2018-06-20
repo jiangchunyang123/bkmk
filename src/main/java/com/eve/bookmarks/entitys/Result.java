@@ -3,9 +3,9 @@ package com.eve.bookmarks.entitys;
 public class Result {
     private int state =1;
     private String message;
-    private String data ;
+    private Object data ;
 
-    public Result(int state, String message, String data) {
+    public Result(int state, String message, Object data) {
         this.state = state;
         this.message = message;
         this.data = data;
@@ -16,7 +16,7 @@ public class Result {
      * @param message 消息
      * @param data
      */
-    public Result(String message, String data) {
+    public Result(String message, Object data) {
         this.message = message;
         this.data = data;
     }
@@ -43,11 +43,11 @@ public class Result {
         this.message = message;
     }
 
-    public String getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(Object data) {
         this.data = data;
     }
 }

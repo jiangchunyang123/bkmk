@@ -8,6 +8,8 @@ import com.eve.bookmarks.entitys.BookMarkMongo;
 import com.eve.bookmarks.service.BookMarkService;
 import com.eve.bookmarks.utils.Constants;
 import com.eve.bookmarks.utils.IDUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.util.Date;
 @Service
 @Transactional
 public class BookMarkServiceImpl implements BookMarkService {
+    private Logger logger = LoggerFactory.getLogger(BookMarkService.class);
     @Autowired
     private BookMarkRepository bookMarkRepository;
     @Autowired
@@ -40,6 +43,7 @@ public class BookMarkServiceImpl implements BookMarkService {
         nodeToListModel(node,uid);
         BookMarkMongo bookMarkMongo = new BookMarkMongo(node.toString());
         mongoTemplate.save(bookMarkMongo,Constants.BOOK_MARK_MONGODB_NAME);
+
     }
 
     /**
@@ -60,6 +64,7 @@ public class BookMarkServiceImpl implements BookMarkService {
             if (obj.containsKey("children")) {
                 nodeToListModel(obj.get("children"),uid);
             }
+            logger.debug("node属性：",obj.toJSONString());
             BookMark book = obj.toJavaObject(BookMark.class);
             Date date = new Date();
             book.setCrateTime(date.getTime());
