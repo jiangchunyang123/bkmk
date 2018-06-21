@@ -33,6 +33,17 @@ public class Schedule {
     @Column
     private Long userId;
 
+    @Column(length = 10)
+    private int scheduleNum;
+
+    public int getScheduleNum() {
+        return scheduleNum;
+    }
+
+    public void setScheduleNum(int scheduleNum) {
+        this.scheduleNum = scheduleNum;
+    }
+
     public Long getId() {
         return id;
     }

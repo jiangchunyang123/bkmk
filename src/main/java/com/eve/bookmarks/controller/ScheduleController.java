@@ -20,33 +20,34 @@ public class ScheduleController {
     private ScheduleService scheduleService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public Result create(@RequestParam("schedule") Schedule schedule, HttpServletRequest httpServletRequest) {
+    public Result create(Schedule schedule) {
         scheduleService.insert(schedule);
-        return new Result(0, "success");
+        return new Result(1, "success");
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
     public Result delete(@RequestParam("id") String uid, HttpServletRequest httpServletRequest) {
-        return new Result(0, "success");
+        return new Result(1, "success");
     }
 
     @RequestMapping(method = RequestMethod.PUT)
     public Result update(@RequestParam("schedule") Schedule schedule, HttpServletRequest httpServletRequest) {
         scheduleService.insert(schedule);
-        return new Result(0, "success");
+        return new Result(1, "success");
     }
 
     @RequestMapping(value = "/{uid}", method = RequestMethod.GET)
     public Result get(@RequestParam("id") Long id, HttpServletRequest httpServletRequest) {
         Schedule schedule = scheduleService.findById(id);
-        return new Result(0, "success", schedule);
+        return new Result(1, "success", schedule);
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public Result queryUsers(Schedule schedule, HttpServletRequest httpServletRequest) {
         List<Schedule> scheduleList = scheduleService.queryList(schedule);
-        return new Result(0, "success", scheduleList);
+        return new Result(1, "success", scheduleList);
     }
+
     @RequestMapping("/p")
     public ModelAndView index() {
         return new ModelAndView("schList");
