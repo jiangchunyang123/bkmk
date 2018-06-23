@@ -2,6 +2,7 @@ package com.eve.bookmarks.controller;
 
 import com.eve.bookmarks.entitys.Result;
 import com.eve.bookmarks.entitys.Schedule;
+import com.eve.bookmarks.entitys.ScheduleRecord;
 import com.eve.bookmarks.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +48,11 @@ public class ScheduleController {
         List<Schedule> scheduleList = scheduleService.queryList(schedule);
         return new Result(1, "success", scheduleList);
     }
-
+    @RequestMapping(value="/rcd",method = RequestMethod.GET)
+    public Result querySchRecord(ScheduleRecord schedule, HttpServletRequest httpServletRequest) {
+        List<ScheduleRecord> scheduleList = scheduleService.queryRecordList(schedule);
+        return new Result(1, "success", scheduleList);
+    }
     @RequestMapping("/p")
     public ModelAndView index() {
         return new ModelAndView("schList");

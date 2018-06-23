@@ -1,12 +1,16 @@
 package com.eve.bookmarks.entitys;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * 由用户创建的时刻表
  */
 @Entity
-public class Schedule {
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class Schedule implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
@@ -14,10 +18,20 @@ public class Schedule {
     @Column(length = 20)
     private String createTimeMils;
     /**
-     * 首次执行时间
+     * 首次执行时间时间戳
      */
     @Column(length = 20)
     private String firstDeadLine;
+    /**
+     * 计划等级
+     */
+    @Column(length = 2)
+    private int rate;
+    /**
+     * 类型，标识是哪种计划：一次性还是循环
+     */
+    @Column(length = 2)
+    private int circleType;
     /**
      *计划类型：年月日时分秒
      */
@@ -30,11 +44,27 @@ public class Schedule {
     @Column(length = 100)
     private String remark;
 
-    @Column
+    @Column()
     private Long userId;
 
     @Column(length = 10)
     private int scheduleNum;
+
+    public int getRate() {
+        return rate;
+    }
+
+    public void setRate(int rate) {
+        this.rate = rate;
+    }
+
+    public int getCircleType() {
+        return circleType;
+    }
+
+    public void setCircleType(int circleType) {
+        this.circleType = circleType;
+    }
 
     public int getScheduleNum() {
         return scheduleNum;

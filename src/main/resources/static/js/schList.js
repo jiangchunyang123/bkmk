@@ -30,25 +30,47 @@ $(document).ready(function () {
         })
     });
     var badge = true;
-    $.get("/sch?userId=" + "193", function (re) {
+    $.get("/sch/rcd?user.id=" + "193", function (re) {
         console.log(re);
+
         if(re&&re.state==1){
             for(var index in re.data){
                 var detail = re.data[index];
                 appendTimeLine(detail);
             }
+            addClasses();
         }
     });
 
+    function addClasses() {
+        $('.timeline>li').each(function(){
+           //console.log('li:',$(this));
+            var head = $(this).find(".hd");
+            var $i = head.find("i");
+            var hid = $(this).find(".hidd");
+            if(badge){
+                head.addClass("timeline-badge");
+            }else{
+                head.addClass("timeline-inverted");
+            }
+            console.log(hid+":"+hid.text());
+            if(hid.text==0){
+                $i.addClass("glyphicon glyphicon-check");
+            }else if(hid.text==1){
+                $i.addClass("glyphicon glyphicon-thumbs-up");
+            }else if(hid.text==-1){
+                $i.addClass("glyphicon glyphicon-thumbs-down");
+            }
+        });
+    }
     /**
      * timeline节点添加
      * @param detail
      */
     function appendTimeLine(detail){
-        var dom =
-        if(badge){
-
-        }
+        var script = template("tpl-timeLineNode", detail);
+        console.log('detail:',detail,'script:',script);
+        $('.timeline').append(script);
         badge = !badge;
     }
 

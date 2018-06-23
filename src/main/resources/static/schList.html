@@ -307,15 +307,16 @@
 </div><!-- /.modal -->
 <script id="tpl-timeLineNode" type="text/html">
     <li>
-        <div class="timeline-badge">
-            <i class="glyphicon glyphicon-check"></i>
+       <div class="hidd" hidden> {{state}}</div>
+        <div class="hd">
+            <i class="glyphicon"></i>
         </div>
         <div class="timeline-panel">
             <div class="timeline-heading">
-                <h4 class="timeline-title">{{d.title}}</h4>
+                <h4 class="timeline-title">{{title}}</h4>
                 <p>
                     <small class="text-muted">
-                        <i class="glyphicon glyphicon-time"></i> {{d.createTime}}
+                        <i class="glyphicon glyphicon-time"></i> {{createTime}}
                     </small>
                 </p>
             </div>
