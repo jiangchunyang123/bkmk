@@ -43,24 +43,30 @@ $(document).ready(function () {
     });
 
     function addClasses() {
+
         $('.timeline>li').each(function(){
-           //console.log('li:',$(this));
-            var head = $(this).find(".hd");
-            var $i = head.find("i");
-            var hid = $(this).find(".hidd");
-            if(badge){
-                head.addClass("timeline-badge");
-            }else{
-                head.addClass("timeline-inverted");
+            var $head = $(this).find(".hd");
+            if($head.length>=1){
+                var $i = $head.find("i:eq(0)");
+                console.log("i:"+$i+$i.length);
+
+                var hid = $(this).find(".hidd");
+                if(badge){
+                    $head.addClass("timeline-badge");
+                }else{
+                    $head.addClass("timeline-inverted");
+                }
+                badge = !badge;
+                var schState =hid.text().trim();
+                if(schState=='0'){
+                    $i.addClass("glyphicon glyphicon-check");
+                }else if(schState=='1'){
+                    $i.addClass("glyphicon glyphicon-thumbs-up");
+                }else if(schState=='-1'){
+                    $i.addClass("glyphicon glyphicon-thumbs-down");
+                }
             }
-            console.log(hid+":"+hid.text());
-            if(hid.text==0){
-                $i.addClass("glyphicon glyphicon-check");
-            }else if(hid.text==1){
-                $i.addClass("glyphicon glyphicon-thumbs-up");
-            }else if(hid.text==-1){
-                $i.addClass("glyphicon glyphicon-thumbs-down");
-            }
+
         });
     }
     /**
@@ -71,7 +77,7 @@ $(document).ready(function () {
         var script = template("tpl-timeLineNode", detail);
         console.log('detail:',detail,'script:',script);
         $('.timeline').append(script);
-        badge = !badge;
+
     }
 
 });
