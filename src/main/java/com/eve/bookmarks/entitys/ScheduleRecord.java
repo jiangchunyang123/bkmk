@@ -23,7 +23,7 @@ public class ScheduleRecord implements Serializable {
     private String updateTimeMils;
 
     @JoinColumn
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     private Schedule schedule;
     @JoinColumn
     @ManyToOne(fetch=FetchType.LAZY)

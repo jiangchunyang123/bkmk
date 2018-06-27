@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 由用户创建的时刻表
@@ -49,6 +50,16 @@ public class Schedule implements Serializable {
 
     @Column(length = 10)
     private int scheduleNum;
+
+    private LocalDateTime testDate;
+
+    public LocalDateTime getTestDate() {
+        return testDate;
+    }
+
+    public void setTestDate(LocalDateTime testDate) {
+        this.testDate = testDate;
+    }
 
     public int getRate() {
         return rate;

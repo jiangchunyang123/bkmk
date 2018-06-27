@@ -25,10 +25,6 @@ private ScheduleRepository scheduleRepository;
         //创建时间
         Long milliSecond = DateUtils.getTimeMils(LocalDateTime.now());
         schedule.setCreateTimeMils(milliSecond.toString());
-        //首次截止日期转换
-        LocalDateTime firstDeadLine = DateUtils.strToDate(schedule.getFirstDeadLine(),"yyyy-MM-dd HH:mm");
-        Long firstDeadL = DateUtils.getTimeMils(firstDeadLine);
-        schedule.setFirstDeadLine(firstDeadL.toString());
         //用户id
         schedule.setUserId(193l);
         scheduleRepository.save(schedule);
