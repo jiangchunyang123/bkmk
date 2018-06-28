@@ -54,7 +54,6 @@ public class ScheduleController {
     }
     @RequestMapping(value="/rcd",method = RequestMethod.GET)
     public Result querySchRecord(ScheduleRecord schedule, HttpServletRequest httpServletRequest) {
-        User user = schedule.getUser();
         Object val = redisTemplate.opsForValue().get(schedule.getUser().getUname());
         if(val==null){
             return new Result(0,"sessionout");
