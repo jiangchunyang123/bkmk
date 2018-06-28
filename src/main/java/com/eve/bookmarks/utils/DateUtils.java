@@ -1,5 +1,7 @@
 package com.eve.bookmarks.utils;
 
+import org.apache.tomcat.jni.Local;
+
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -7,6 +9,9 @@ import java.time.format.DateTimeFormatter;
 public class DateUtils {
     public static Long getTimeMils(LocalDateTime localDateTime) {
         return localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+    }
+    public static Long nowMils() {
+        return LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
     }
     public static String getTimeMilsStr(LocalDateTime localDateTime) {
         return getTimeMils(localDateTime).toString();

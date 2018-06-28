@@ -1,9 +1,12 @@
 $(document).ready(function () {
+ //   document.write("<script language=javascript src='http://localhost:8090/js/common.js'></script>");
     var $newBtn = $('.newPlan');
-    $("#firstDeadLine").datetimepicker({format: 'yyyy-mm-dd hh:ii',
+    $("#firstDeadLine").datetimepicker({
+        format: 'yyyy-mm-dd hh:ii',
         autoclose: true,
         todayBtn: true,
-        keyboardNavigation:true});
+        keyboardNavigation: true
+    });
     $newBtn.on('click', function () {
         console.log('new Btn clicked...');
 
@@ -15,14 +18,13 @@ $(document).ready(function () {
             var scheduleNum = $form.find('#scheduleNum');
             var scheduleType = $form.find('input[type="radio"]:checked');
             var remark = $form.find('#remark');
-            console.log('dateL',firstDeadLine.data("datetimepicker").getDate());
+           console.log('dateL', firstDeadLine.data("datetimepicker").getDate().Format("yyyyMMddHHmm"));
             var data = {
                 title: title.val(),
-                firstDeadLine: firstDeadLine.val(),
+                firstDeadLine: firstDeadLine.data("datetimepicker").getDate().Format("yyyyMMddHHmm"),
                 scheduleNum: scheduleNum.val(),
                 scheduleType: scheduleType.val(),
-                remark: remark.val(),
-                testDate:firstDeadLine.data("datetimepicker").getDate()
+                remark: remark.val()
             }
             console.log("data:", JSON.stringify(data));
             $.post('/sch',
@@ -39,8 +41,8 @@ $(document).ready(function () {
     $.get("/sch/rcd?user.id=" + "193", function (re) {
         console.log(re);
 
-        if(re&&re.state==1){
-            for(var index in re.data){
+        if (re && re.state == 1) {
+            for (var index in re.data) {
                 var detail = re.data[index];
                 appendTimeLine(detail);
             }
@@ -50,23 +52,23 @@ $(document).ready(function () {
 
     function addClasses() {
 
-        $('.timeline>li').each(function(index,e){
+        $('.timeline>li').each(function (index, e) {
             var $head = $(this).find(".hd");
-            if($head.length>=1){
+            if ($head.length >= 1) {
                 var $i = $head.find("i:eq(0)");
 
                 var hid = $(this).find(".hidd");
-                if(index%2==1){
+                if (index % 2 == 1) {
                     $(this).addClass("timeline-inverted");
                 }
-                var schState =hid.text().trim();
-                if(schState=='0'){
+                var schState = hid.text().trim();
+                if (schState == '0') {
                     $i.addClass("glyphicon glyphicon-check");
-                }else if(schState=='1'){
+                } else if (schState == '1') {
                     console.log('add..');
                     $i.addClass("glyphicon glyphicon-thumbs-up");
                     $head.addClass("success");
-                }else if(schState=='-1'){
+                } else if (schState == '-1') {
                     $i.addClass("glyphicon glyphicon-thumbs-down");
                     $head.addClass("danger");
                 }
@@ -74,12 +76,13 @@ $(document).ready(function () {
 
         });
     }
+
     /**
      * timeline节点添加
      * @param detail
      */
-    function appendTimeLine(detail){
-        console.log("kkkkk:",detail.schedule)
+    function appendTimeLine(detail) {
+        console.log("kkkkk:", detail.schedule)
         var script = template("tpl-timeLineNode", detail);
         $('.timeline').append(script);
     }

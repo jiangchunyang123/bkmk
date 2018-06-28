@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 由用户创建的时刻表
@@ -13,28 +12,28 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Schedule implements Serializable {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(length = 20)
-    private String createTimeMils;
+    private Long createTimeMils;
     /**
      * 首次执行时间时间戳
      */
     @Column(length = 20)
-    private String firstDeadLine;
+    private Long firstDeadLineMils;
     /**
      * 计划等级
      */
     @Column(length = 2)
-    private int rate;
+    private int rank;
     /**
      * 类型，标识是哪种计划：一次性还是循环
      */
     @Column(length = 2)
     private int circleType;
     /**
-     *计划类型：年月日时分秒
+     * 计划类型：年月日时分秒
      */
     @Column(length = 2)
     private int scheduleType;
@@ -45,28 +44,43 @@ public class Schedule implements Serializable {
     @Column(length = 100)
     private String remark;
 
-    @Column()
-    private Long userId;
+    @Column
+    @ManyToOne
+    private User user;
 
     @Column(length = 10)
     private int scheduleNum;
 
-    private LocalDateTime testDate;
-
-    public LocalDateTime getTestDate() {
-        return testDate;
+    public Long getCreateTimeMils() {
+        return createTimeMils;
     }
 
-    public void setTestDate(LocalDateTime testDate) {
-        this.testDate = testDate;
+    public void setCreateTimeMils(Long createTimeMils) {
+        this.createTimeMils = createTimeMils;
     }
 
-    public int getRate() {
-        return rate;
+    public Long getFirstDeadLineMils() {
+        return firstDeadLineMils;
     }
 
-    public void setRate(int rate) {
-        this.rate = rate;
+    public void setFirstDeadLineMils(Long firstDeadLineMils) {
+        this.firstDeadLineMils = firstDeadLineMils;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getCircleType() {
@@ -93,14 +107,6 @@ public class Schedule implements Serializable {
         this.id = id;
     }
 
-    public String getCreateTimeMils() {
-        return createTimeMils;
-    }
-
-    public void setCreateTimeMils(String createTimeMils) {
-        this.createTimeMils = createTimeMils;
-    }
-
     public int getScheduleType() {
         return scheduleType;
     }
@@ -125,19 +131,4 @@ public class Schedule implements Serializable {
         this.remark = remark;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public String getFirstDeadLine() {
-        return firstDeadLine;
-    }
-
-    public void setFirstDeadLine(String firstDeadLine) {
-        this.firstDeadLine = firstDeadLine;
-    }
 }

@@ -15,7 +15,7 @@ Date.prototype.Format = function (fmt) {
         fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
     }
     for (var k in o) {
-        if (new RegExp("(" + k + ")").test(fmt)) {sss
+        if (new RegExp("(" + k + ")").test(fmt)) {
             //第二种：使用String()类型进行强制数据类型转换String(date.getFullYear())，这种更容易理解。
             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(String(o[k]).length)));
         }

@@ -23,16 +23,13 @@ private ScheduleRepository scheduleRepository;
     @Override
     public void insert(Schedule schedule) {
         //创建时间
-        Long milliSecond = DateUtils.getTimeMils(LocalDateTime.now());
-        schedule.setCreateTimeMils(milliSecond.toString());
-        //用户id
-        schedule.setUserId(193l);
+        schedule.setCreateTimeMils(DateUtils.nowMils());
         scheduleRepository.save(schedule);
     }
 
     @Override
     public List<Schedule> queryList(Schedule schedule) {
-      return  scheduleRepository.findAllByUserId(schedule.getUserId());
+      return  scheduleRepository.findAllByUserId(schedule.getUser().getId());
     }
     @Override
     public List<ScheduleRecord> queryRecordList(ScheduleRecord record) {
