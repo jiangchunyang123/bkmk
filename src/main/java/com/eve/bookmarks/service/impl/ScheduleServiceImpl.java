@@ -22,9 +22,22 @@ private ScheduleRepository scheduleRepository;
 
     @Override
     public void insert(Schedule schedule) {
-        //创建时间
         schedule.setCreateTimeMils(DateUtils.nowMils());
         scheduleRepository.save(schedule);
+
+        //创建时自动创建一个代办
+        ScheduleRecord record = scheduleRecordRepository.findFirstByScheduleOrderByIdDesc(schedule);
+        ScheduleRecord next =schedule.builderNextRecord(record);
+        scheduleRecordRepository.save(next);
+    }
+
+    /**
+     * 增加record
+     * @param schedule
+     */
+    @Override
+    public void appendRecord(Schedule schedule) {
+
     }
 
     @Override

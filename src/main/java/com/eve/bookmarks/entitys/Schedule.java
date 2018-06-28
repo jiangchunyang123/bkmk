@@ -1,6 +1,8 @@
 package com.eve.bookmarks.entitys;
 
+import com.eve.bookmarks.utils.DateUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,15 +30,15 @@ public class Schedule implements Serializable {
     @Column(length = 2)
     private int rank;
     /**
-     * 类型，标识是哪种计划：一次性还是循环
+     * 类型，标识是哪种计划：一次性还是循环，默认循环
      */
-    @Column(length = 2)
-    private int circleType;
+    @Column
+    private boolean isCircle = true;
     /**
-     * 计划类型：年月日时分秒
+     * 计划类型：年月日时,默认日
      */
     @Column(length = 2)
-    private int scheduleType;
+    private int scheduleType = 2;
 
     @Column(length = 25)
     private String title;
@@ -44,7 +46,7 @@ public class Schedule implements Serializable {
     @Column(length = 100)
     private String remark;
 
-    @Column
+    @JoinColumn
     @ManyToOne
     private User user;
 
@@ -83,12 +85,12 @@ public class Schedule implements Serializable {
         this.user = user;
     }
 
-    public int getCircleType() {
-        return circleType;
+    public boolean isCircle() {
+        return isCircle;
     }
 
-    public void setCircleType(int circleType) {
-        this.circleType = circleType;
+    public void setCircle(boolean circle) {
+        isCircle = circle;
     }
 
     public int getScheduleNum() {
@@ -131,4 +133,20 @@ public class Schedule implements Serializable {
         this.remark = remark;
     }
 
+    /**
+     * 构建下一个计划节点
+     *
+     * @param record
+     * @return
+     */
+    public ScheduleRecord builderNextRecord(ScheduleRecord record) {
+        if (record == null) {
+            record = new ScheduleRecord(firstDeadLineMils, createTimeMils, this, user);
+        } else {
+            ScheduleRecord newRecord = new ScheduleRecord();
+            BeanUtils.copyProperties(record, newRecord);
+            newRecord.setDeadLineMils(DateUtils.addMils(newRecord.getDeadLineMils(), scheduleType, scheduleNum));
+        }
+        return record;
+    }
 }

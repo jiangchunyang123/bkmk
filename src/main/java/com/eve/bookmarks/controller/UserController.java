@@ -4,19 +4,24 @@ import com.eve.bookmarks.entitys.Result;
 import com.eve.bookmarks.entitys.User;
 import com.eve.bookmarks.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/u")
 public class UserController {
     @Autowired
     private UserService userService;
-
+    @Resource
+    private RedisTemplate<String,Object> redisTemplate;
     @RequestMapping(method = RequestMethod.POST)
     public Result createUser(@RequestParam("user") User user, HttpServletRequest httpServletRequest) {
         userService.createUser(user);
@@ -45,5 +50,12 @@ public class UserController {
     public Result queryUsers(User user, HttpServletRequest httpServletRequest) {
         // userService.createUser(user);
         return new Result(0, "success");
+    }
+    @RequestMapping("/hello")
+    public Result hello(User user, HttpServletRequest httpServletRequest) {
+        String uname = user.getUname();
+        String[] unames = uname.split(",");
+        redisTemplate.opsForValue().set(unames[0],"true",10,TimeUnit.HOURS);
+        return new Result(1, "helloha");
     }
 }

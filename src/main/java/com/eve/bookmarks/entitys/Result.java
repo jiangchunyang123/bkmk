@@ -10,7 +10,12 @@ public class Result {
         this.message = message;
         this.data = data;
     }
-
+    static class Success {
+        private final static Result instance= new Result(1,"success");
+    }
+    public static Result Success(){
+        return Success.instance;
+    }
     /**
      *
      * @param message 消息
@@ -26,6 +31,8 @@ public class Result {
         this.state = state;
         this.message = message;
     }
+
+
 
     public int getState() {
         return state;

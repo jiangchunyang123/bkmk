@@ -10,17 +10,22 @@ public class ScheduleRecord implements Serializable {
     private Long id;
 
     @Column(length = 20)
-    private String createTimeMils;
+    private Long createTimeMils;
     /**
-     * 标识状态：
+     * 标识状态：默认0
      */
     @Column(length = 2)
-    private int state;
+    private int state =0;
     /**
      * 更新时间戳
      */
     @Column(length = 20)
-    private String updateTimeMils;
+    private Long updateTimeMils;
+    /**
+     * 更新时间戳
+     */
+    @Column(length = 20)
+    private Long deadLineMils;
 
     @JoinColumn
     @ManyToOne(fetch=FetchType.LAZY)
@@ -28,6 +33,25 @@ public class ScheduleRecord implements Serializable {
     @JoinColumn
     @ManyToOne(fetch=FetchType.LAZY)
     private User user;
+
+    public ScheduleRecord(Long deadLineMils ,Long createTimeMils, Schedule schedule, User user) {
+        this.createTimeMils = createTimeMils;
+        this.schedule = schedule;
+        this.user = user;
+        this.deadLineMils = deadLineMils;
+    }
+
+    public ScheduleRecord() {
+
+    }
+
+    public Long getDeadLineMils() {
+        return deadLineMils;
+    }
+
+    public void setDeadLineMils(Long deadLine) {
+        this.deadLineMils = deadLine;
+    }
 
     public User getUser() {
         return user;
@@ -45,14 +69,6 @@ public class ScheduleRecord implements Serializable {
         this.state = state;
     }
 
-    public String getUpdateTimeMils() {
-        return updateTimeMils;
-    }
-
-    public void setUpdateTimeMils(String updateTimeMils) {
-        this.updateTimeMils = updateTimeMils;
-    }
-
     public Long getId() {
         return id;
     }
@@ -61,19 +77,27 @@ public class ScheduleRecord implements Serializable {
         this.id = id;
     }
 
-    public String getCreateTimeMils() {
-        return createTimeMils;
-    }
-
-    public void setCreateTimeMils(String createTimeMils) {
-        this.createTimeMils = createTimeMils;
-    }
-
     public Schedule getSchedule() {
         return schedule;
     }
 
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
+    }
+
+    public Long getCreateTimeMils() {
+        return createTimeMils;
+    }
+
+    public void setCreateTimeMils(Long createTimeMils) {
+        this.createTimeMils = createTimeMils;
+    }
+
+    public Long getUpdateTimeMils() {
+        return updateTimeMils;
+    }
+
+    public void setUpdateTimeMils(Long updateTimeMils) {
+        this.updateTimeMils = updateTimeMils;
     }
 }

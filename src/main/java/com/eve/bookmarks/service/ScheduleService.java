@@ -8,6 +8,8 @@ import java.util.List;
 public interface ScheduleService {
     void insert(Schedule schedule);
 
+    void appendRecord(Schedule schedule);
+
     List<Schedule> queryList(Schedule schedule);
 
     List<ScheduleRecord> queryRecordList(ScheduleRecord record);
