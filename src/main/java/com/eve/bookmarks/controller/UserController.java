@@ -53,9 +53,9 @@ public class UserController {
     }
     @RequestMapping("/hello")
     public Result hello(User user, HttpServletRequest httpServletRequest) {
-        String uname = user.getUname();
-        String[] unames = uname.split(",");
-        redisTemplate.opsForValue().set(unames[0],"true",10,TimeUnit.HOURS);
+        String uid = user.getUid();
+        String[] ids = uid.split(",");
+        redisTemplate.opsForValue().set(ids[0],"true",10,TimeUnit.HOURS);
         return new Result(1, "helloha");
     }
 }

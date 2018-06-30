@@ -16,4 +16,5 @@ public interface ScheduleService {
 
     Schedule findById(Long id);
 
+    void updateRecord(ScheduleRecord record);
 }

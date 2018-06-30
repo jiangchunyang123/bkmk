@@ -28,7 +28,7 @@ public class Schedule implements Serializable {
      * 计划等级
      */
     @Column(length = 2)
-    private int rank;
+    private int level;
     /**
      * 类型，标识是哪种计划：一次性还是循环，默认循环
      */
@@ -69,12 +69,12 @@ public class Schedule implements Serializable {
         this.firstDeadLineMils = firstDeadLineMils;
     }
 
-    public int getRank() {
-        return rank;
+    public int getLevel() {
+        return level;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public User getUser() {

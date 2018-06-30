@@ -18,7 +18,7 @@ public class BookmarksApplicationTests {
 	    User user = new User();
 	    user.setUid("jiangchunyang");
 	    user.setUname("蒋春阳");
-	    user.setPassword("654321");
+	    user.setPassword("666");
 	    user.setState(1);
         userService.createUser(user);
 	}

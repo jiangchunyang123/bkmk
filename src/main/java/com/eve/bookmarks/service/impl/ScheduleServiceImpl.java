@@ -2,6 +2,7 @@ package com.eve.bookmarks.service.impl;
 
 import com.eve.bookmarks.dao.ScheduleRecordRepository;
 import com.eve.bookmarks.dao.ScheduleRepository;
+import com.eve.bookmarks.dao.UserRepository;
 import com.eve.bookmarks.entitys.Schedule;
 import com.eve.bookmarks.entitys.ScheduleRecord;
 import com.eve.bookmarks.entitys.User;
@@ -19,7 +20,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 private ScheduleRepository scheduleRepository;
     @Autowired
     private ScheduleRecordRepository scheduleRecordRepository;
-
+    @Autowired
+    private UserRepository userRepository;
     @Override
     public void insert(Schedule schedule) {
         schedule.setCreateTimeMils(DateUtils.nowMils());
@@ -46,10 +48,16 @@ private ScheduleRepository scheduleRepository;
     }
     @Override
     public List<ScheduleRecord> queryRecordList(ScheduleRecord record) {
-        return  scheduleRecordRepository.findAllByUser(record.getUser());
+        User user = userRepository.getByUid(record.getUser().getUid());
+        return  scheduleRecordRepository.findAllByUser(user);
     }
     @Override
     public Schedule findById(Long id) {
         return scheduleRepository.findById(id).get();
+    }
+
+    @Override
+    public void updateRecord(ScheduleRecord record) {
+        scheduleRecordRepository.save(record);
     }
 }

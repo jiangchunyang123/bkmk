@@ -40,7 +40,11 @@ public class ScheduleController {
         scheduleService.insert(schedule);
         return new Result(1, "success");
     }
-
+    @RequestMapping(value="/rcd",method = RequestMethod.PUT)
+    public Result updateRcd(@RequestParam("schedule") ScheduleRecord record, HttpServletRequest httpServletRequest) {
+        scheduleService.updateRecord(record);
+        return new Result(1, "success");
+    }
     @RequestMapping(value = "/{uid}", method = RequestMethod.GET)
     public Result get(@RequestParam("id") Long id, HttpServletRequest httpServletRequest) {
         Schedule schedule = scheduleService.findById(id);
@@ -54,12 +58,12 @@ public class ScheduleController {
     }
     @RequestMapping(value="/rcd",method = RequestMethod.GET)
     public Result querySchRecord(ScheduleRecord schedule, HttpServletRequest httpServletRequest) {
-        Object val = redisTemplate.opsForValue().get(schedule.getUser().getUname());
+        Object val = redisTemplate.opsForValue().get(schedule.getUser().getUid());
         if(val==null){
             return new Result(0,"sessionout");
         }
         List<ScheduleRecord> scheduleList = scheduleService.queryRecordList(schedule);
-        return Result.Success();
+        return Result.Success(scheduleList);
     }
     @RequestMapping("/p")
     public ModelAndView index() {

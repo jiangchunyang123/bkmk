@@ -36,14 +36,14 @@
 <!-- 布局-->
 <div class="container">
     <div class="row">
-        <div class="col-sm-6 ">
+        <div class="col-sm-8">
             <div class="page-header">
-                <h1 id="timeline">Timeline</h1>
+                <h2 id="timeline">Timeline</h2>
             </div>
             <ul class="timeline">
             </ul>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <a href="http://www.bootcss.com/" class="button button-primary button-small">Go</a>
             <a href="http://www.bootcss.com/"
                class="button button-highlight button-pill button-large">Go</a>
@@ -101,7 +101,7 @@
                     <div class="form-group">
                         <label for="remark" class="col-sm-3 control-label">用户</label>
                         <div class="col-sm-9">
-                            <input name="user.id" id="user.id" hidden>
+                            <input name="user.id" id="userId" >
                         </div>
                     </div>
 
@@ -121,7 +121,7 @@
     <li>
         <div class="hidd" hidden> {{state}}</div>
         <div class="hd timeline-badge">
-            <i></i>
+            <!--<i></i>-->
         </div>
         <div class="timeline-panel">
             <div class="timeline-heading">
@@ -137,17 +137,17 @@
             <div class="timeline-body">
               <!--  <p>{{schedule.remark}}</p>-->
                 {{if state!=1}}
-                <hr>
-                <div align="right">
-                <button type="button" class="btn btn-primary btn-xs">
-                    <span class="glyphicon glyphicon-ok"></span>打卡
-                </button>
-                <button type="button" class="btn btn-danger btn-xs">
-                    <span class="glyphicon glyphicon-remove"></span>放弃
-                </button>
+                <hr style="margin:10px">
+                <div align="right " class="buttons">
+                    <button type="button" class="btn btn-primary btn-xs check">
+                        <span class="glyphicon glyphicon-ok"></span>打卡
+                    </button>
+                    <button type="button" class="btn btn-danger btn-xs giveup">
+                        <span class="glyphicon glyphicon-remove "></span>放弃
+                    </button>
                 </div>
+                {{/if}}
             </div>
-            {{/if}}
         </div>
         </div>
     </li>

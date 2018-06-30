@@ -13,8 +13,10 @@ public class Result {
     static class Success {
         private final static Result instance= new Result(1,"success");
     }
-    public static Result Success(){
-        return Success.instance;
+    public static Result Success(Object data){
+        Result  result = Success.instance;
+        result.setData(data);
+        return result;
     }
     /**
      *
