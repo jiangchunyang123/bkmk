@@ -9,6 +9,9 @@ import com.eve.bookmarks.entitys.User;
 import com.eve.bookmarks.service.ScheduleService;
 import com.eve.bookmarks.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,10 +30,7 @@ private ScheduleRepository scheduleRepository;
         schedule.setCreateTimeMils(DateUtils.nowMils());
         scheduleRepository.save(schedule);
 
-        //创建时自动创建一个代办
-        ScheduleRecord record = scheduleRecordRepository.findFirstByScheduleOrderByIdDesc(schedule);
-        ScheduleRecord next =schedule.builderNextRecord(record);
-        scheduleRecordRepository.save(next);
+        appendRecord(schedule);
     }
 
     /**
@@ -39,7 +39,10 @@ private ScheduleRepository scheduleRepository;
      */
     @Override
     public void appendRecord(Schedule schedule) {
-
+        //创建时自动创建一个代办
+        ScheduleRecord record = scheduleRecordRepository.findFirstByScheduleOrderByIdDesc(schedule);
+        ScheduleRecord next =schedule.builderNextRecord(record);
+        scheduleRecordRepository.save(next);
     }
 
     @Override
@@ -49,7 +52,16 @@ private ScheduleRepository scheduleRepository;
     @Override
     public List<ScheduleRecord> queryRecordList(ScheduleRecord record) {
         User user = userRepository.getByUid(record.getUser().getUid());
-        return  scheduleRecordRepository.findAllByUser(user);
+
+        Sort sort = null;
+        if ("Desc".equals(record.direction)) {
+            sort = new Sort(Sort.Direction.DESC, record.descName);
+        } else {
+            sort = new Sort(Sort.Direction.ASC, record.descName);
+        }
+        Pageable pageable = PageRequest.of(record.pageIndex, record.pageSize, sort);
+
+        return scheduleRecordRepository.findAllByUser(user,pageable);
     }
     @Override
     public Schedule findById(Long id) {

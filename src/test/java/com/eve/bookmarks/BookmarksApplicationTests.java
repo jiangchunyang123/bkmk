@@ -16,8 +16,8 @@ public class BookmarksApplicationTests {
 	@Test
 	public void contextLoads() {
 	    User user = new User();
-	    user.setUid("jiangchunyang");
-	    user.setUname("蒋春阳");
+	    user.setUid("jcy");
+	    user.setUname("chunyang");
 	    user.setPassword("666");
 	    user.setState(1);
         userService.createUser(user);

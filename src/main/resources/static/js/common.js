@@ -22,3 +22,11 @@ Date.prototype.Format = function (fmt) {
     }
     return fmt;
 }
+Date.prototype.isToday = function () {
+  return this.Format("yyyyMMdd") == new Date().Format("yyyyMMdd");
+}
+Date.prototype.isTomorrow = function () {
+    var todayStr =  new Date().Format("yyyyMMdd");
+    var dayStr = new Date().getDate();
+    return this.Format("yyyyMMdd") == new Date().Format("yyyyMMdd");
+}
