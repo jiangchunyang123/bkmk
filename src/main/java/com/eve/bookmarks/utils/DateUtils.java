@@ -32,20 +32,19 @@ public class DateUtils {
         return formatter.format(localDateTime);
     }
 
-    public static Long addMils(Long source, int type, int num) {
-        LocalDateTime dateTime = LocalDateTime.ofEpochSecond(source / 1000, 0,
-                ZoneOffset.ofHours(8));
+    public static LocalDateTime addMils(LocalDateTime dateTime, int type, int num) {
+
         switch (type) {
             case 1:
-                return dateTime.plusHours(num).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+                return dateTime.plusHours(num);
             case 2:
-                return dateTime.plusDays(num).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+                return dateTime.plusDays(num);
             case 3:
-                return dateTime.plusMonths(num).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+                return dateTime.plusMonths(num);
             case 4:
-                return dateTime.plusYears(num).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+                return dateTime.plusYears(num);
             default:
-                return source;
+                return dateTime;
         }
     }
 }

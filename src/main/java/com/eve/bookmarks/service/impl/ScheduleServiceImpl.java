@@ -14,10 +14,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Transactional
 public class ScheduleServiceImpl implements ScheduleService {
 @Autowired
 private ScheduleRepository scheduleRepository;
@@ -27,7 +29,7 @@ private ScheduleRepository scheduleRepository;
     private UserRepository userRepository;
     @Override
     public void insert(Schedule schedule) {
-        schedule.setCreateTimeMils(DateUtils.nowMils());
+        schedule.setCreateTime(LocalDateTime.now());
         scheduleRepository.save(schedule);
 
         appendRecord(schedule);
@@ -70,6 +72,8 @@ private ScheduleRepository scheduleRepository;
 
     @Override
     public void updateRecord(ScheduleRecord record) {
-        scheduleRecordRepository.save(record);
+        scheduleRecordRepository.updateRecordState(record.getState(),record.getId());
+        record = scheduleRecordRepository.findById(record.getId()).get();
+        appendRecord(record.getSchedule());
     }
 }

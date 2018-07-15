@@ -41,7 +41,7 @@ public class ScheduleController {
         return new Result(1, "success");
     }
     @RequestMapping(value="/rcd",method = RequestMethod.PUT)
-    public Result updateRcd(@RequestParam("schedule") ScheduleRecord record, HttpServletRequest httpServletRequest) {
+    public Result updateRcd(ScheduleRecord record, HttpServletRequest httpServletRequest) {
         scheduleService.updateRecord(record);
         return new Result(1, "success");
     }
@@ -65,6 +65,7 @@ public class ScheduleController {
         List<ScheduleRecord> scheduleList = scheduleService.queryRecordList(schedule);
         return Result.Success(scheduleList);
     }
+
     @RequestMapping("/p")
     public ModelAndView index() {
         return new ModelAndView("schList");

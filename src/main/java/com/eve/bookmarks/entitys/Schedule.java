@@ -1,11 +1,14 @@
 package com.eve.bookmarks.entitys;
 
 import com.eve.bookmarks.utils.DateUtils;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.beans.BeanUtils;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 由用户创建的时刻表
@@ -17,13 +20,16 @@ public class Schedule implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 20)
-    private Long createTimeMils;
+
+    @Column
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createTime;
     /**
      * 首次执行时间时间戳
      */
-    @Column(length = 20)
-    private Long firstDeadLineMils;
+    @Column
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime firstDeadLine;
     /**
      * 计划等级
      */
@@ -53,20 +59,20 @@ public class Schedule implements Serializable {
     @Column(length = 10)
     private int scheduleNum;
 
-    public Long getCreateTimeMils() {
-        return createTimeMils;
+    public LocalDateTime getCreateTime() {
+        return createTime;
     }
 
-    public void setCreateTimeMils(Long createTimeMils) {
-        this.createTimeMils = createTimeMils;
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
     }
 
-    public Long getFirstDeadLineMils() {
-        return firstDeadLineMils;
+    public LocalDateTime getFirstDeadLine() {
+        return firstDeadLine;
     }
 
-    public void setFirstDeadLineMils(Long firstDeadLineMils) {
-        this.firstDeadLineMils = firstDeadLineMils;
+    public void setFirstDeadLine(LocalDateTime firstDeadLine) {
+        this.firstDeadLine = firstDeadLine;
     }
 
     public int getLevel() {
@@ -141,11 +147,11 @@ public class Schedule implements Serializable {
      */
     public ScheduleRecord builderNextRecord(ScheduleRecord record) {
         if (record == null) {
-            record = new ScheduleRecord(firstDeadLineMils, createTimeMils, this, user);
+            record = new ScheduleRecord(firstDeadLine, createTime, this, user);
         } else {
             ScheduleRecord newRecord = new ScheduleRecord();
             BeanUtils.copyProperties(record, newRecord);
-            newRecord.setDeadLineMils(DateUtils.addMils(newRecord.getDeadLineMils(), scheduleType, scheduleNum));
+            newRecord.setDeadLine(DateUtils.addMils(newRecord.getDeadLine(), scheduleType, scheduleNum));
         }
         return record;
     }

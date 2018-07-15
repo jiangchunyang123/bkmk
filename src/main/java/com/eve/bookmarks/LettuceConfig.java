@@ -3,6 +3,7 @@ package com.eve.bookmarks;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -17,12 +18,13 @@ public class LettuceConfig {
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(host,port);
+
+        return new LettuceConnectionFactory(new RedisStandaloneConfiguration("localhost", 6379));
     }
 
     @Bean
-    public RedisTemplate<Object, Object> redisTemplate(){
-        RedisTemplate<Object, Object> template = new RedisTemplate<>();
+    public RedisTemplate<String, Object> redisTemplate(){
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
         return template;
     }

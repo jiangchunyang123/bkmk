@@ -6,10 +6,7 @@ import com.eve.bookmarks.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -51,11 +48,9 @@ public class UserController {
         // userService.createUser(user);
         return new Result(0, "success");
     }
-    @RequestMapping("/hello")
-    public Result hello(User user, HttpServletRequest httpServletRequest) {
-        String uid = user.getUid();
-        String[] ids = uid.split(",");
-        redisTemplate.opsForValue().set(ids[0],"true",10,TimeUnit.HOURS);
+    @RequestMapping("/hello/{uid}")
+    public Result hello(@PathVariable String uid, HttpServletRequest httpServletRequest) {
+        redisTemplate.opsForValue().set(uid,"true",10,TimeUnit.HOURS);
         return new Result(1, "helloha");
     }
 }

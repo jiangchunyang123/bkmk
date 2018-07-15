@@ -1,7 +1,10 @@
 package com.eve.bookmarks.entitys;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -40,8 +43,12 @@ public class BookMark implements Serializable {
      */
     @Column(length = 2)
     private int state = 1;
-    private Long crateTime;
-    private Long updateTime;
+    @Column
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime crateTime;
+    @Column
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updateTime;
     @Column(length = 40)
     private String uid;
 
@@ -53,19 +60,19 @@ public class BookMark implements Serializable {
         this.uid = uid;
     }
 
-    public Long getCrateTime() {
+    public LocalDateTime getCrateTime() {
         return crateTime;
     }
 
-    public void setCrateTime(Long crateTime) {
+    public void setCrateTime(LocalDateTime crateTime) {
         this.crateTime = crateTime;
     }
 
-    public Long getUpdateTime() {
+    public LocalDateTime getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Long updateTime) {
+    public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
 

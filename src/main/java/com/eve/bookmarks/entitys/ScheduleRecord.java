@@ -1,56 +1,78 @@
 package com.eve.bookmarks.entitys;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
-public class ScheduleRecord extends PageFilter implements Serializable{
+public class ScheduleRecord extends PageFilter implements Serializable {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 20)
-    private Long createTimeMils;
+    @Column
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createTime;
     /**
      * 标识状态：默认0
      */
     @Column(length = 2)
-    private int state =0;
+    private int state = 0;
     /**
      * 更新时间戳
      */
-    @Column(length = 20)
-    private Long updateTimeMils;
+    @Column
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updateTime;
     /**
      * 更新时间戳
      */
-    @Column(length = 20)
-    private Long deadLineMils;
-
+    @Column
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime deadLine;
     @JoinColumn
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Schedule schedule;
     @JoinColumn
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    public ScheduleRecord(Long deadLineMils ,Long createTimeMils, Schedule schedule, User user) {
-        this.createTimeMils = createTimeMils;
+    public ScheduleRecord(LocalDateTime deadLine, LocalDateTime createTime, Schedule schedule, User user) {
+        this.createTime = createTime;
         this.schedule = schedule;
         this.user = user;
-        this.deadLineMils = deadLineMils;
+        this.deadLine = deadLine;
     }
 
     public ScheduleRecord() {
 
     }
 
-    public Long getDeadLineMils() {
-        return deadLineMils;
+    public LocalDateTime getCreateTime() {
+        return createTime;
     }
 
-    public void setDeadLineMils(Long deadLine) {
-        this.deadLineMils = deadLine;
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public LocalDateTime getDeadLine() {
+        return deadLine;
+    }
+
+    public void setDeadLine(LocalDateTime deadLine) {
+        this.deadLine = deadLine;
     }
 
     public User getUser() {
@@ -85,19 +107,4 @@ public class ScheduleRecord extends PageFilter implements Serializable{
         this.schedule = schedule;
     }
 
-    public Long getCreateTimeMils() {
-        return createTimeMils;
-    }
-
-    public void setCreateTimeMils(Long createTimeMils) {
-        this.createTimeMils = createTimeMils;
-    }
-
-    public Long getUpdateTimeMils() {
-        return updateTimeMils;
-    }
-
-    public void setUpdateTimeMils(Long updateTimeMils) {
-        this.updateTimeMils = updateTimeMils;
-    }
 }

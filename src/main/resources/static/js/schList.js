@@ -24,7 +24,7 @@ $(document).ready(function () {
         var userId = $form.find("#userId");
         var data = {
             title: title.val(),
-            firstDeadLineMils: firstDeadLine.data("datetimepicker").getDate().getTime(),
+            firstDeadLine: firstDeadLine.data("datetimepicker").getDate().Format("yyyy-MM-dd HH:mm:ss"),
             scheduleNum: scheduleNum.val(),
             scheduleType: scheduleType.val(),
             remark: remark.val(),
@@ -49,7 +49,7 @@ $(document).ready(function () {
         var params=[];
         params.push("pageSize=20");
         params.push("pageIndex=0");
-        params.push("descName=deadLineMils");
+        params.push("descName=deadLine");
         params.push("direction=Desc");
         $.get("/sch/rcd?user.uid=" + "jcy&"+params.join("&"), function (re) {
 
@@ -88,7 +88,7 @@ $(document).ready(function () {
             if ($head.length >= 1) {
                 var hid = $(this).find(".hidd");
                 var badge = $(this).find(".timeline-badge");
-                var date = new Date(indexData.deadLineMils);
+                var date = new Date(indexData.deadLine);
 
                 var formateDate = date.isToday()?date.Format("HH:mm"):date.Format("yyyy-MM-dd");
 

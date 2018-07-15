@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -66,9 +67,9 @@ public class BookMarkServiceImpl implements BookMarkService {
             }
             logger.debug("node属性：",obj.toJSONString());
             BookMark book = obj.toJavaObject(BookMark.class);
-            Date date = new Date();
-            book.setCrateTime(date.getTime());
-            book.setUpdateTime(date.getTime());
+            LocalDateTime date =LocalDateTime.now();
+            book.setCrateTime(date);
+            book.setUpdateTime(date);
             book.setUid(uid);
             bookMarkRepository.save(book);
         }
