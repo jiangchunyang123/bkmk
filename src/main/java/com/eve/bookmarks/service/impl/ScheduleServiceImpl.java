@@ -63,7 +63,7 @@ private ScheduleRepository scheduleRepository;
         }
         Pageable pageable = PageRequest.of(record.pageIndex, record.pageSize, sort);
 
-        return scheduleRecordRepository.findAllByUser(user,pageable);
+        return scheduleRecordRepository.findAllByUserAndStateIs(user,0,pageable);
     }
     @Override
     public Schedule findById(Long id) {

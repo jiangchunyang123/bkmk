@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ScheduleRecordRepository extends CrudRepository<ScheduleRecord, Long> {
-    List<ScheduleRecord> findAllByUser(User user,Pageable pageable);
+    List<ScheduleRecord> findAllByUserAndStateIs(User user,int state,Pageable pageable);
 
     ScheduleRecord findFirstByScheduleOrderByIdDesc(Schedule schedule);
     @Modifying

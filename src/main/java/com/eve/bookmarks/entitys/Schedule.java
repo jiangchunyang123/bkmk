@@ -1,5 +1,6 @@
 package com.eve.bookmarks.entitys;
 
+import com.eve.bookmarks.utils.Constants;
 import com.eve.bookmarks.utils.DateUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -146,13 +147,16 @@ public class Schedule implements Serializable {
      * @return
      */
     public ScheduleRecord builderNextRecord(ScheduleRecord record) {
+        ScheduleRecord newRecord = null;
         if (record == null) {
-            record = new ScheduleRecord(firstDeadLine, createTime, this, user);
+            newRecord = new ScheduleRecord(firstDeadLine, createTime, this, user);
         } else {
-            ScheduleRecord newRecord = new ScheduleRecord();
+             newRecord = new ScheduleRecord();
             BeanUtils.copyProperties(record, newRecord);
             newRecord.setDeadLine(DateUtils.addMils(newRecord.getDeadLine(), scheduleType, scheduleNum));
+            newRecord.setState(0);
+            newRecord.setId(null);
         }
-        return record;
+        return newRecord;
     }
 }

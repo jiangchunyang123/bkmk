@@ -3,8 +3,10 @@ package com.eve.bookmarks.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.eve.bookmarks.dao.BookMarkRepository;
+import com.eve.bookmarks.dao.UserRepository;
 import com.eve.bookmarks.entitys.BookMark;
 import com.eve.bookmarks.entitys.BookMarkMongo;
+import com.eve.bookmarks.entitys.User;
 import com.eve.bookmarks.service.BookMarkService;
 import com.eve.bookmarks.utils.Constants;
 import com.eve.bookmarks.utils.IDUtils;
@@ -28,6 +30,8 @@ public class BookMarkServiceImpl implements BookMarkService {
     @Autowired
     private BookMarkRepository bookMarkRepository;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private MongoTemplate mongoTemplate;
 
 
@@ -40,11 +44,25 @@ public class BookMarkServiceImpl implements BookMarkService {
         return mongoTemplate.findById(uid,BookMarkMongo.class);
     }
     @Override
-    public void saveBookMarks(Object node, String uid) {
-        nodeToListModel(node,uid);
-        BookMarkMongo bookMarkMongo = new BookMarkMongo(node.toString());
+    public void saveBookMarks(Object node, User user) {
+//        nodeToListModel(node,uid);
+        BookMarkMongo bookMarkMongo = new BookMarkMongo(node.toString(),user.getUid(),String.valueOf(user.getVersion()));
         mongoTemplate.save(bookMarkMongo,Constants.BOOK_MARK_MONGODB_NAME);
+    }
 
+    /**
+     * 更新书签
+     * @param node 书签树
+     * @param user 用户
+     */
+    @Override
+    public void updateBookMarks(Object node, User user) {
+        BookMarkMongo bookMarkMongo = new BookMarkMongo(node.toString(),user.getUid(),String.valueOf(user.getVersion()+1));
+
+        //重新插入书签树
+        mongoTemplate.save(bookMarkMongo,Constants.BOOK_MARK_MONGODB_NAME );
+        //更新user表版本号
+        userRepository.addVersion(user.getId(),bookMarkMongo.getId());
     }
 
     /**

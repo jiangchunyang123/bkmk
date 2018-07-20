@@ -33,18 +33,24 @@ public class BkMarkController {
     @RequestMapping(value = "/{uid}", method = RequestMethod.GET, consumes = "application/json")
     public ResponseEntity<BookMarkMongo> queryBookMarkById(@PathVariable String uid) {
         User user = userService.findByUid(uid);
-        BookMarkMongo bookMarkMongo =bookMarkService.getBookMarktree(user.getBookmarkMongoId());
+        BookMarkMongo bookMarkMongo =bookMarkService.getBookMarktree(user.getMongoId());
         return ResponseEntity.ok(bookMarkMongo);
     }
 
     @RequestMapping(value = "/{uid}", method = RequestMethod.POST)
-    public Result synBookMarks(@PathVariable String uid, @RequestParam("bookmarks") String bookmarks, HttpServletRequest httpServletRequest) {
+    public Result createBookMarks(@PathVariable String uid, @RequestParam("bookmarks") String bookmarks, HttpServletRequest httpServletRequest) {
         User user = userService.findByUid(uid);
         JSONObject jsonObject = JSONObject.parseObject(bookmarks);
-        bookMarkService.saveBookMarks(jsonObject.get("data"),uid);
+        bookMarkService.saveBookMarks(jsonObject.get("data"),user);
         return new Result(0, "success");
     }
-
+    @RequestMapping(value = "/{uid}", method = RequestMethod.PUT)
+    public Result synBookMarks(@PathVariable String uid, @RequestParam("bookmarks") String bookmarks ) {
+        User user = userService.findByUid(uid);
+        JSONObject jsonObject = JSONObject.parseObject(bookmarks);
+        bookMarkService.saveBookMarks(jsonObject.get("data"),user);
+        return new Result(0, "success");
+    }
     @RequestMapping(value = "/hello")
     public String hello() {
         return "hello world！";

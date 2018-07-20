@@ -26,11 +26,22 @@ public class User implements Serializable {
     @Column(length = 1)
     private Integer state;
     @Column(length = 25)
-    private String bookmarkMongoId;
+    private String mongoId;
+    @Column
+    private int version;
+
     @Column
     private LocalDateTime createTime;
     @Column
     private LocalDateTime updateTime;
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
     public LocalDateTime getCreateTime() {
         return createTime;
@@ -104,11 +115,11 @@ public class User implements Serializable {
         this.state = state;
     }
 
-    public String getBookmarkMongoId() {
-        return bookmarkMongoId;
+    public String getMongoId() {
+        return mongoId;
     }
 
-    public void setBookmarkMongoId(String bookmarkMongoId) {
-        this.bookmarkMongoId = bookmarkMongoId;
+    public void setMongoId(String mongoId) {
+        this.mongoId = mongoId;
     }
 }
