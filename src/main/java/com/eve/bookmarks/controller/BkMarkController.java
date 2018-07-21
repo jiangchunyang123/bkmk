@@ -7,6 +7,7 @@ import com.eve.bookmarks.entitys.Result;
 import com.eve.bookmarks.entitys.User;
 import com.eve.bookmarks.service.BookMarkService;
 import com.eve.bookmarks.service.UserService;
+import com.eve.bookmarks.utils.Constants;
 import com.eve.bookmarks.utils.JSONUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
@@ -30,27 +31,53 @@ public class BkMarkController {
     private BookMarkService bookMarkService;
     @Autowired
     private UserService userService;
+
+    /**
+     * 通过用户id获取存储的书签树信息
+     *
+     * @param uid
+     * @return
+     */
     @RequestMapping(value = "/{uid}", method = RequestMethod.GET, consumes = "application/json")
     public ResponseEntity<BookMarkMongo> queryBookMarkById(@PathVariable String uid) {
         User user = userService.findByUid(uid);
-        BookMarkMongo bookMarkMongo =bookMarkService.getBookMarktree(user.getMongoId());
+        BookMarkMongo bookMarkMongo = bookMarkService.getBookMarktree(user.getMongoId());
         return ResponseEntity.ok(bookMarkMongo);
     }
 
+    /**
+     * 上传自己的修改信息
+     *
+     * @param uid
+     * @param bookmarks
+     * @param httpServletRequest
+     * @return
+     */
     @RequestMapping(value = "/{uid}", method = RequestMethod.POST)
     public Result createBookMarks(@PathVariable String uid, @RequestParam("bookmarks") String bookmarks, HttpServletRequest httpServletRequest) {
         User user = userService.findByUid(uid);
         JSONObject jsonObject = JSONObject.parseObject(bookmarks);
-        bookMarkService.saveBookMarks(jsonObject.get("data"),user);
+        bookMarkService.saveBookMarks(jsonObject.get("data"), user);
         return new Result(0, "success");
     }
+
+    /**
+     * 同步书签信息
+     *
+     * @param uid
+     * @param bookmarks
+     * @return
+     */
     @RequestMapping(value = "/{uid}", method = RequestMethod.PUT)
-    public Result synBookMarks(@PathVariable String uid, @RequestParam("bookmarks") String bookmarks ) {
+    public Result synBookMarks(@PathVariable String uid, @RequestParam("bookmarks") String bookmarks) {
+
         User user = userService.findByUid(uid);
-        JSONObject jsonObject = JSONObject.parseObject(bookmarks);
-        bookMarkService.saveBookMarks(jsonObject.get("data"),user);
-        return new Result(0, "success");
+
+        Map<String, Object> map = bookMarkService.syncBookMark(bookmarks, user);
+
+        return new Result(Constants.STATUS_SUCCESS, map);
     }
+
     @RequestMapping(value = "/hello")
     public String hello() {
         return "hello world！";

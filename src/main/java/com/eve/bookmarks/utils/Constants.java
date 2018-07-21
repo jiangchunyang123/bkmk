@@ -18,4 +18,8 @@ public class Constants {
     public static int MONTH = 3;
     public static int YEAR = 4;
 
+    //有效标识
+    public static int STATE_ENABLE = 1;
+    public static int STATE_DISABLE = 0;
+
 }
