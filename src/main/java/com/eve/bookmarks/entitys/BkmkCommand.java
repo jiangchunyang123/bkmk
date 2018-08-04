@@ -1,5 +1,6 @@
 package com.eve.bookmarks.entitys;
 
+import com.eve.bookmarks.utils.Constants;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -34,14 +35,8 @@ public class BkmkCommand {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
 
-    @Column
-    private Long version;
 
-    /**
-     *每次更新减一
-     */
-    @Column
-    private int count;
+
 
     @Column(length = 1)
     private int state;
@@ -56,6 +51,34 @@ public class BkmkCommand {
 
     @Column
     private Long endVersion;
+
+    /**
+     * 创建一个书签命令
+     * @param path
+     * @param bookmark
+     * @param startVersion
+     * @param endVersion
+     * @param command
+     * @return
+     */
+    public static BkmkCommand buildCommand(String path, BookMark bookmark,Long startVersion,Long endVersion,int command) {
+        LocalDateTime now = LocalDateTime.now();
+        return new BkmkCommand(path,bookmark,now,now,Constants.STATE_ENABLE,command,startVersion,endVersion);
+    }
+
+
+    public BkmkCommand(String path, BookMark bookMark, LocalDateTime createTime, LocalDateTime updateTime,
+                        int state, int command, Long startVersion, Long endVersion) {
+        this.path = path;
+        this.bookMark = bookMark;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+
+        this.state = state;
+        this.command = command;
+        this.startVersion = startVersion;
+        this.endVersion = endVersion;
+    }
 
     public Long getStartVersion() {
         return startVersion;
@@ -73,13 +96,6 @@ public class BkmkCommand {
         this.endVersion = endVersion;
     }
 
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
 
     public Long getId() {
         return id;
@@ -119,14 +135,6 @@ public class BkmkCommand {
 
     public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public Long getVersion() {
-        return version;
-    }
-
-    public void setVersion(Long version) {
-        this.version = version;
     }
 
     public int getState() {

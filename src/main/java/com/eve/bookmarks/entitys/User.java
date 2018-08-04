@@ -27,19 +27,22 @@ public class User implements Serializable {
     private Integer state;
     @Column(length = 25)
     private String mongoId;
+    /**
+     * 书签最新版本
+     */
     @Column
-    private int version;
+    private Long version;
 
     @Column
     private LocalDateTime createTime;
     @Column
     private LocalDateTime updateTime;
 
-    public int getVersion() {
+    public Long getVersion() {
         return version;
     }
 
-    public void setVersion(int version) {
+    public void setVersion(Long version) {
         this.version = version;
     }
 

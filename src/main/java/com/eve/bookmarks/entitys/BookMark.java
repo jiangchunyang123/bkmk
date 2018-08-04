@@ -5,30 +5,39 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * 书签实体类
  */
 @Entity
 public class BookMark implements Serializable {
+
+
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long mysqlId;
 
     @Column(length = 10)
     private String id;
+
     @Column(length = 10)
     private String parentId;
+
     @Column(length = 10)
     private String idx;
+
     @Column(length = 155)
     private String url;
+
+    @Column
     private String title;
+
     @Column(length = 20)
     private String dateAdded;
+
     @Column(length = 20)
     private String dateGroupModified;
+
     @Transient
     private String remark;
 
@@ -43,14 +52,28 @@ public class BookMark implements Serializable {
      */
     @Column(length = 2)
     private int state = 1;
+
     @Column
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime crateTime;
+
     @Column
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
+
     @Column(length = 40)
     private String uid;
+
+    @Column
+    private String path;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     public String getUid() {
         return uid;
