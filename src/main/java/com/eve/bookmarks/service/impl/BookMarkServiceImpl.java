@@ -12,7 +12,7 @@ import com.eve.bookmarks.entitys.BookMarkMongo;
 import com.eve.bookmarks.entitys.User;
 import com.eve.bookmarks.service.BookMarkService;
 import com.eve.bookmarks.utils.Constants;
-import com.mysql.jdbc.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,17 +34,22 @@ public class BookMarkServiceImpl implements BookMarkService {
 
     private Logger logger = LoggerFactory.getLogger(BookMarkService.class);
 
-    @Autowired
-    private BookMarkRepository bookMarkRepository;
+    private final BookMarkRepository bookMarkRepository;
+
+    private final UserRepository userRepository;
+
+    private final MongoTemplate mongoTemplate;
+
+    private final BkmkCommandRepository bkmkCommandRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
-
-    @Autowired
-    private BkmkCommandRepository bkmkCommandRepository;
+    public BookMarkServiceImpl(BookMarkRepository bookMarkRepository, UserRepository userRepository,
+                               MongoTemplate mongoTemplate, BkmkCommandRepository bkmkCommandRepository) {
+        this.bookMarkRepository = bookMarkRepository;
+        this.userRepository = userRepository;
+        this.mongoTemplate = mongoTemplate;
+        this.bkmkCommandRepository = bkmkCommandRepository;
+    }
 
     @Override
     public BookMark get(Long mysqlId) {
@@ -57,8 +62,8 @@ public class BookMarkServiceImpl implements BookMarkService {
     }
 
     /**
-     * @param node
-     * @param user
+     * @param node 书签树
+     * @param user 用户
      * @description 保存书签，每次保存都是新版本
      */
     @Override
@@ -105,8 +110,8 @@ public class BookMarkServiceImpl implements BookMarkService {
         for (String key : localMap.keySet()) {
             if (dbMap.get(key) == null) {
                 BookMark bookmark = localMap.get(key);
-                createAddCommand(bookmark);
-                addBookMark(bookmark, bkmkJsonDb);
+                createAddCommand(key, bookmark, localVersion, dbVersion);
+                addBookMark(bookmark, key, bkmkJsonDb);
             } else {
                 //若找到就直接把DBMap中数据移除，剩下的就都是在本地中没有的了
                 dbMap.remove(key);
@@ -114,8 +119,8 @@ public class BookMarkServiceImpl implements BookMarkService {
         }
 
         //遍历dbMap，发现版本树中有而本地没有的，发送删除命令
-        for (Map.Entry<String,BookMark> val : dbMap.entrySet()) {
-            createDelCommand(val.getKey(),val.getValue(),localVersion,dbVersion);
+        for (Map.Entry<String, BookMark> val : dbMap.entrySet()) {
+            createDelCommand(val.getKey(), val.getValue(), localVersion, dbVersion);
             delBookMark(val.getKey(), bkmkJsonDb);
         }
 
@@ -129,7 +134,7 @@ public class BookMarkServiceImpl implements BookMarkService {
     /**
      * 更新DB中的数据,新增一个版本
      *
-     * @param bkmkJsonDb
+     * @param bkmkJsonDb 数据库中的书签树
      */
     private void updateBkMark(JSONObject bkmkJsonDb, User user) {
         user.setVersion(user.getVersion() + 1);
@@ -139,67 +144,104 @@ public class BookMarkServiceImpl implements BookMarkService {
     /**
      * 往DB对应版本树中插入一条DelCommand
      *
-     * @param bookmark
-     * @param localVersion
-     * @param dbVersion
+     * @param bookmark     书签明细
+     * @param localVersion 浏览器本地书签版本
+     * @param dbVersion    数据库中最新版本
      */
     private void createDelCommand(String path, BookMark bookmark, Long localVersion, Long dbVersion) {
-        BkmkCommand bkmkCommand =  BkmkCommand.buildCommand(path,bookmark,localVersion,dbVersion,-1);
+        BkmkCommand bkmkCommand = BkmkCommand.buildCommand(path, bookmark, localVersion, dbVersion, -1);
         bkmkCommandRepository.save(bkmkCommand);
     }
 
     /**
      * 删除DB中指定书签
      *
-     * @param bkmkJsonDb
+     * @param bkmkJsonDb 数据库中的书签树
      */
-    private void delBookMark(String path , JSONObject bkmkJsonDb) {
-        travelAndDel(bkmkJsonDb,0,bkmkJsonDb,path);
+    private void delBookMark(String path, JSONObject bkmkJsonDb) {
+        travelAndDel(0, bkmkJsonDb, path, "");
     }
 
 
     /**
      * mongo中增加一条书签
      *
-     * @param bookmark
+     * @param bookmark 书签
      */
-    private void addBookMark(BookMark bookmark,String path, JSONObject jsonObject) {
+    private void addBookMark(BookMark bookmark, String path, JSONObject parentNode) {
         String[] paths = path.split("_");
-        travelAndAdd(bookmark,0,paths,jsonObject);
+        travelAndAdd(bookmark, 0, paths, parentNode);
     }
 
-    private void travelAndAdd(BookMark bookmark,int deep, String[] paths, JSONObject parentObj) {
+    private void travelAndAdd(BookMark bookmark, int deep, String[] paths, JSONObject parentObj) {
+        if (deep > paths.length - 1) {
+            return;
+        }
 
         if (parentObj.containsKey("children")) {
             JSONArray arr = (JSONArray) parentObj.get("children");
-            for (int i = 0; i < arr.size(); i++) {
-                JSONObject child = (JSONObject) arr.get(i);
-                //既没有文件夹又没有书签，就在此创建一个
-                if(!paths[deep].equals(child.get("title"))){
-                    Map<String,Object> map = new HashMap<>();
-                    map.put("title",paths[deep]);
-                    arr.add(map);
-                    travelAndAdd(bookmark, deep + 1,paths, parentObj);
-                }else{
-                    travelAndAdd(bookmark, deep + 1,paths, child);
+            boolean isHavePath = false;
+            for (Object anArr : arr) {
+                JSONObject child = (JSONObject) anArr;
+                if (paths[deep].equals(child.get("title")) || paths[deep].equals(child.get("url"))) {
+                    isHavePath = true;
+                    travelAndAdd(bookmark, deep + 1, paths, parentObj);
+                    break;
                 }
             }
+            if (!isHavePath) {
+                arr.add(initDeepPath(deep, paths, bookmark));
+            }
+        } else {
+            JSONArray arr = new JSONArray();
+            arr.add(initDeepPath(deep, paths, bookmark));
+            parentObj.put("children", arr);
         }
-        logger.debug("node属性：", jsonObject.toJSONString());
-        BookMark book = jsonObject.toJavaObject(BookMark.class);
-        String key = buildKey(book, parentObj, deep);
-        if (targetKey.equals(key)) {
-            parentObj.remove(jsonObject);
+
+    }
+
+    /**
+     * 检测到从某层级开始创建路径
+     *
+     * @param deep     层级
+     * @param paths    路径
+     * @param bookmark 书签
+     * @return 一条树路径节点列表
+     */
+    private JSONObject initDeepPath(int deep, String[] paths, BookMark bookmark) {
+        JSONObject parentObj = new JSONObject();
+        JSONObject rootNode = parentObj;
+        for (int i = deep; i < paths.length; i++) {
+            if (i == paths.length - 1) {
+                JSONArray arr = (JSONArray) parentObj.get("children");
+                JSONObject jsonObject1 = new JSONObject();
+                jsonObject1.put("title", bookmark.getTitle());
+                if (Strings.isNotBlank(bookmark.getUrl())) {
+                    jsonObject1.put("url", bookmark.getUrl());
+                } else {
+                    jsonObject1.put("children", new JSONArray());
+                }
+                arr.add(jsonObject1);
+            } else {
+                JSONObject jsonObject1 = new JSONObject();
+                jsonObject1.put("title", paths[i]);
+
+                jsonObject1.put("children", new JSONArray());
+                JSONArray arr = (JSONArray) parentObj.get("children");
+                arr.add(jsonObject1);
+                parentObj = jsonObject1;
+            }
         }
+        return rootNode;
     }
 
     /**
      * 同步时，本地增加书签，需要往版本树增加一个addCommand
      *
-     * @param bookmark
+     * @param bookmark 书签
      */
-    private void createAddCommand(BookMark bookmark) {
-        BkmkCommand bkmkCommand =  BkmkCommand.buildCommand(path,bookmark,localVersion,dbVersion,1);
+    private void createAddCommand(String path, BookMark bookmark, Long localVersion, Long dbVersion) {
+        BkmkCommand bkmkCommand = BkmkCommand.buildCommand(path, bookmark, localVersion, dbVersion, 1);
         bkmkCommandRepository.save(bkmkCommand);
     }
 
@@ -243,62 +285,59 @@ public class BookMarkServiceImpl implements BookMarkService {
     /**
      * 遍历树，并将节点存储到map中去
      *
-     * @param nodes
-     * @return
+     * @param jsonObject 节点树
      */
-    public void travelAndTransform(JSON nodes, int deep, Map<String, BookMark> map, JSONObject parentObj) {
-        JSONObject jsonObject = (JSONObject) nodes;
+    public void travelAndTransform(JSONObject jsonObject, int deep, Map<String, BookMark> map, String path) {
         if (jsonObject.containsKey("children")) {
             JSONArray arr = (JSONArray) jsonObject.get("children");
-            for (int i = 0; i < arr.size(); i++) {
-                JSONObject child = (JSONObject) arr.get(i);
-                travelAndTransform(child, deep + 1, map, jsonObject);
+            for (Object anArr : arr) {
+                JSONObject child = (JSONObject) anArr;
+                String nextPath = path + "_" + (child.get("url") == null ? child.get("title").toString() : child.get("url").toString());
+                travelAndTransform(child, deep + 1, map, nextPath);
             }
         }
         logger.debug("node属性：", jsonObject.toJSONString());
         BookMark book = jsonObject.toJavaObject(BookMark.class);
-        String key = buildKey(book, parentObj, deep);
-        map.put(key, book);
+        map.put(path, book);
     }
 
     /**
      * 遍历树，并将指定节点删除
      *
-     * @param jsonObject
-     * @return
+     * @param parentObj 父级节点
      */
-    public void travelAndDel(JSONObject jsonObject, int deep, JSONObject parentObj, String targetKey) {
-        if (jsonObject.containsKey("children")) {
-            JSONArray arr = (JSONArray) jsonObject.get("children");
+    public void travelAndDel(int deep, JSONObject parentObj, String targetKey, String parentPath) {
+        if (parentObj.containsKey("children")) {
+            JSONArray arr = (JSONArray) parentObj.get("children");
             for (int i = 0; i < arr.size(); i++) {
                 JSONObject child = (JSONObject) arr.get(i);
-                travelAndDel(child, deep + 1, jsonObject,targetKey);
+                String nextPath = parentPath + "_" + (child.get("url") == null ? child.get("title").toString() : child.get("url").toString());
+                if (nextPath.equals(targetKey)) {
+                    arr.remove(child);
+                    return;
+                }
+                travelAndDel(deep + 1, child, targetKey, nextPath);
             }
         }
-        logger.debug("node属性：", jsonObject.toJSONString());
-        BookMark book = jsonObject.toJavaObject(BookMark.class);
-        String key = buildKey(book, parentObj, deep);
-        if (targetKey.equals(key)) {
-            parentObj.remove(jsonObject);
-        }
     }
-
-    /**
-     * 用深度，url（书签）或者标题(目录)，父级标题 做唯一标识
-     *
-     * @param book
-     * @param deep
-     * @return
-     */
-    private String buildKey(BookMark book, JSONObject parentBook, int deep) {
-        String key = "" + deep + "_" + parentBook.getString("title");
-        if (!StringUtils.isNullOrEmpty(book.getUrl())) {
-            key += "_" + book.getUrl();
-        } else {
-            key += "_" + book.getTitle();
-        }
-        return key;
-    }
+//
+//    /**
+//     * 用深度，url（书签）或者标题(目录)，父级标题 做唯一标识
+//     *
+//     * @param book 当前书签
+//     * @param deep 层级
+//     * @return 书签的路径组成的key
+//     */
+//    private String buildKey(BookMark book, JSONObject parentBook, int deep) {
+//        String parentTitle = parentBook == null ? "" : "_" + parentBook.getString("title");
+//        String key = "" + deep + parentTitle;
+//        if (!StringUtils.isNullOrEmpty(book.getUrl())) {
+//            key += "_" + book.getUrl();
+//        } else {
+//            key += "_" + book.getTitle();
+//        }
+//        return key;
+//    }
 
     @Override
     public void saveBookMark(BookMark book) {
