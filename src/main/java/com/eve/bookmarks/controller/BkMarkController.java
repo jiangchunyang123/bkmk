@@ -45,34 +45,18 @@ public class BkMarkController {
         return ResponseEntity.ok(bookMarkMongo);
     }
 
-    /**
-     * 上传自己的修改信息
-     *
-     * @param uid
-     * @param bookmarks
-     * @param httpServletRequest
-     * @return
-     */
-    @RequestMapping(value = "/{uid}", method = RequestMethod.POST)
-    public Result createBookMarks(@PathVariable String uid, @RequestParam("bookmarks") String bookmarks, HttpServletRequest httpServletRequest) {
-        User user = userService.findByUid(uid);
-        JSONObject jsonObject = JSONObject.parseObject(bookmarks);
-        bookMarkService.saveBookMarks(jsonObject.get("data"), user);
-        return new Result(0, "success");
-    }
 
     /**
      * 同步书签信息
      *
-     * @param uid
+     * @param userId
      * @param bookmarks
      * @return
      */
-    @RequestMapping(value = "/{uid}", method = RequestMethod.PUT)
-    public Result synBookMarks(@PathVariable String uid, @RequestParam("bookmarks") String bookmarks) {
+    @RequestMapping(value = "/{uid}", method = RequestMethod.POST)
+    public Result synBookMarks(@PathVariable String userId, @RequestParam("bookmarks") String bookmarks) {
 
-        User user = userService.findByUid(uid);
-
+        User user = userService.get(userId);
         Map<String, Object> map = bookMarkService.syncBookMark(bookmarks, user);
 
         return new Result(Constants.STATUS_SUCCESS, map);

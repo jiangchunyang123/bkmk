@@ -10,13 +10,14 @@ import java.util.List;
 
 @Repository
 public interface BkmkCommandRepository extends CrudRepository<BkmkCommand, Long> {
+
     /**
      * 查询所有version范围包含自己version的所有命令
      * @param state
      * @param version
      * @return
      */
-    @Query("from BkmkCommand  cmd where cmd.startVersion <= :version and cmd.endVersion >=:version and state = 1 order by cmd.createTime")
+    @Query("from BkmkCommand cmd where cmd.startVersion <= :version and cmd.endVersion >=:version and cmd.state = :state order by cmd.createTime")
     List<BkmkCommand> findCommands(@Param("state") int state,@Param("version") Long version);
 
 }

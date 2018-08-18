@@ -20,17 +20,28 @@ public class UserServiceImpl implements UserService {
     private MongoTemplate mongoTemplate;
     @Override
     public int createUser(User user){
-        //生成MongoDBid
-        BookMarkMongo bookMarkMongo = new BookMarkMongo("");
-        mongoTemplate.save(bookMarkMongo,Constants.BOOK_MARK_MONGODB_NAME);
-        user.setMongoId(bookMarkMongo.getId());
+
         //入库
         userRepository.save(user);
+
+        //生成MongoDBid
+        BookMarkMongo bookMarkMongo = new BookMarkMongo("");
+        bookMarkMongo.setUid(user.getId());
+        bookMarkMongo.setVersion(user.getVersion());
+        mongoTemplate.save(bookMarkMongo,Constants.BOOK_MARK_MONGODB_NAME);
+
+        user.setMongoId(bookMarkMongo.getId());
+        userRepository.save(user);
+
         return 1;
     }
 
     @Override
     public User findByUid(String uid) {
         return userRepository.getByUid(uid);
+    }
+    @Override
+    public User get(String id) {
+        return userRepository.findById(id).get();
     }
 }

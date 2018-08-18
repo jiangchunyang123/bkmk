@@ -1,5 +1,6 @@
 package com.eve.bookmarks;
 
+import com.alibaba.fastjson.JSONObject;
 import com.eve.bookmarks.entitys.User;
 import com.eve.bookmarks.service.UserService;
 import org.junit.Test;
@@ -20,13 +21,15 @@ public class BookmarksApplicationTests {
     private RedisTemplate<String, Object> redisTemplate;
 
     @Test
-    public void contextLoads() {
+    public void createUser() {
         User user = new User();
-        user.setUid("jcy");
+        user.setUid("god");
         user.setUname("chunyang");
         user.setPassword("666");
         user.setState(1);
+        user.setVersion(0l);
         userService.createUser(user);
+        System.out.printf("user:"+JSONObject.toJSONString(user));
     }
 
     @Test

@@ -10,10 +10,6 @@ public interface BookMarkService {
 
     BookMark get(Long mysqlId);
 
-    void updateBookMarks(Object node, User user);
-
-    void saveBookMark(BookMark book);
-
     BookMarkMongo getBookMarktree(String uid);
 
     void saveBookMarks(Object node, User uid);

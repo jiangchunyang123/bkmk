@@ -10,7 +10,7 @@ public class BookMarkMongo {
     private String id;
     private String uid;
     private String value;
-    private String version;
+    private Long version;
 
     public String getUid() {
         return uid;
@@ -20,11 +20,11 @@ public class BookMarkMongo {
         this.uid = uid;
     }
 
-    public String getVersion() {
+    public Long getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(Long version) {
         this.version = version;
     }
 
@@ -33,7 +33,7 @@ public class BookMarkMongo {
     public BookMarkMongo(String value) {
         this.value = value;
     }
-    public BookMarkMongo(String value,String uid,String version) {
+    public BookMarkMongo(String value,String uid,Long version) {
         this.value = value;
         this.uid = uid;
         this.version = version;

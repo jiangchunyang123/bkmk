@@ -1,7 +1,6 @@
 package com.eve.bookmarks.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.eve.bookmarks.dao.BkmkCommandRepository;
 import com.eve.bookmarks.dao.BookMarkRepository;
@@ -11,8 +10,8 @@ import com.eve.bookmarks.entitys.BookMark;
 import com.eve.bookmarks.entitys.BookMarkMongo;
 import com.eve.bookmarks.entitys.User;
 import com.eve.bookmarks.service.BookMarkService;
+import com.eve.bookmarks.utils.BookMkTreeBuilder;
 import com.eve.bookmarks.utils.Constants;
-import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +67,7 @@ public class BookMarkServiceImpl implements BookMarkService {
      */
     @Override
     public void saveBookMarks(Object node, User user) {
-        BookMarkMongo bookMarkMongo = new BookMarkMongo(node.toString(), user.getUid(), String.valueOf(user.getVersion()));
+        BookMarkMongo bookMarkMongo = new BookMarkMongo(node.toString(), user.getUid(),user.getVersion());
         mongoTemplate.save(bookMarkMongo, Constants.BOOK_MARK_MONGODB_NAME);
         //更新user中的mongoid
         user.setMongoId(bookMarkMongo.getId());
@@ -89,7 +88,7 @@ public class BookMarkServiceImpl implements BookMarkService {
 
         //本地的书签
         Map<String, BookMark> localMap = new HashMap<>();
-        travelAndTransform(localBkMarks, 0, localMap, null);
+        BookMkTreeBuilder.travelAndTransform(localBkMarks, 0, localMap, null);
 
         //数据库中存储的书签
         Map<String, BookMark> dbMap = new HashMap<>();
@@ -97,7 +96,7 @@ public class BookMarkServiceImpl implements BookMarkService {
         JSONObject bkmkJsonDb = JSON.parseObject(bookMarkDB.getValue());
         Long dbVersion = Long.valueOf(bookMarkDB.getVersion());
 
-        travelAndTransform(bkmkJsonDb, 0, dbMap, null);
+        BookMkTreeBuilder.travelAndTransform(bkmkJsonDb, 0, dbMap, null);
 
         //首先执行从本地version开始所有命令,0 代表初次导入，不执行命令，直接合并，不做任何删除操作
         if (localVersion != 0) {
@@ -159,7 +158,7 @@ public class BookMarkServiceImpl implements BookMarkService {
      * @param bkmkJsonDb 数据库中的书签树
      */
     private void delBookMark(String path, JSONObject bkmkJsonDb) {
-        travelAndDel(0, bkmkJsonDb, path, "");
+        BookMkTreeBuilder.travelAndDel(0, bkmkJsonDb, path, "");
     }
 
 
@@ -170,69 +169,7 @@ public class BookMarkServiceImpl implements BookMarkService {
      */
     private void addBookMark(BookMark bookmark, String path, JSONObject parentNode) {
         String[] paths = path.split("_");
-        travelAndAdd(bookmark, 0, paths, parentNode);
-    }
-
-    private void travelAndAdd(BookMark bookmark, int deep, String[] paths, JSONObject parentObj) {
-        if (deep > paths.length - 1) {
-            return;
-        }
-
-        if (parentObj.containsKey("children")) {
-            JSONArray arr = (JSONArray) parentObj.get("children");
-            boolean isHavePath = false;
-            for (Object anArr : arr) {
-                JSONObject child = (JSONObject) anArr;
-                if (paths[deep].equals(child.get("title")) || paths[deep].equals(child.get("url"))) {
-                    isHavePath = true;
-                    travelAndAdd(bookmark, deep + 1, paths, parentObj);
-                    break;
-                }
-            }
-            if (!isHavePath) {
-                arr.add(initDeepPath(deep, paths, bookmark));
-            }
-        } else {
-            JSONArray arr = new JSONArray();
-            arr.add(initDeepPath(deep, paths, bookmark));
-            parentObj.put("children", arr);
-        }
-
-    }
-
-    /**
-     * 检测到从某层级开始创建路径
-     *
-     * @param deep     层级
-     * @param paths    路径
-     * @param bookmark 书签
-     * @return 一条树路径节点列表
-     */
-    private JSONObject initDeepPath(int deep, String[] paths, BookMark bookmark) {
-        JSONObject parentObj = new JSONObject();
-        JSONObject rootNode = parentObj;
-        for (int i = deep; i < paths.length; i++) {
-            if (i == paths.length - 1) {
-                JSONArray arr = (JSONArray) parentObj.get("children");
-                JSONObject jsonObject1 = new JSONObject();
-                jsonObject1.put("title", bookmark.getTitle());
-                if (Strings.isNotBlank(bookmark.getUrl())) {
-                    jsonObject1.put("url", bookmark.getUrl());
-                } else {
-                    jsonObject1.put("children", new JSONArray());
-                }
-                arr.add(jsonObject1);
-            } else {
-                JSONObject jsonObject1 = new JSONObject();
-                jsonObject1.put("title", paths[i]);
-
-                jsonObject1.put("children", new JSONArray());
-                JSONArray arr = (JSONArray) parentObj.get("children");
-                arr.add(jsonObject1);
-                parentObj = jsonObject1;
-            }
-        }
-        return rootNode;
+        BookMkTreeBuilder.travelAndAdd(bookmark, 0, paths, parentNode);
     }
 
     /**
@@ -266,81 +203,4 @@ public class BookMarkServiceImpl implements BookMarkService {
         }
     }
 
-    /**
-     * 更新书签
-     *
-     * @param node 书签树
-     * @param user 用户
-     */
-    @Override
-    public void updateBookMarks(Object node, User user) {
-        BookMarkMongo bookMarkMongo = new BookMarkMongo(node.toString(), user.getUid(), String.valueOf(user.getVersion() + 1));
-
-        //重新插入书签树
-        mongoTemplate.save(bookMarkMongo, Constants.BOOK_MARK_MONGODB_NAME);
-        //更新user表版本号
-        userRepository.addVersion(user.getId(), bookMarkMongo.getId());
-    }
-
-    /**
-     * 遍历树，并将节点存储到map中去
-     *
-     * @param jsonObject 节点树
-     */
-    public void travelAndTransform(JSONObject jsonObject, int deep, Map<String, BookMark> map, String path) {
-        if (jsonObject.containsKey("children")) {
-            JSONArray arr = (JSONArray) jsonObject.get("children");
-            for (Object anArr : arr) {
-                JSONObject child = (JSONObject) anArr;
-                String nextPath = path + "_" + (child.get("url") == null ? child.get("title").toString() : child.get("url").toString());
-                travelAndTransform(child, deep + 1, map, nextPath);
-            }
-        }
-        logger.debug("node属性：", jsonObject.toJSONString());
-        BookMark book = jsonObject.toJavaObject(BookMark.class);
-        map.put(path, book);
-    }
-
-    /**
-     * 遍历树，并将指定节点删除
-     *
-     * @param parentObj 父级节点
-     */
-    public void travelAndDel(int deep, JSONObject parentObj, String targetKey, String parentPath) {
-        if (parentObj.containsKey("children")) {
-            JSONArray arr = (JSONArray) parentObj.get("children");
-            for (int i = 0; i < arr.size(); i++) {
-                JSONObject child = (JSONObject) arr.get(i);
-                String nextPath = parentPath + "_" + (child.get("url") == null ? child.get("title").toString() : child.get("url").toString());
-                if (nextPath.equals(targetKey)) {
-                    arr.remove(child);
-                    return;
-                }
-                travelAndDel(deep + 1, child, targetKey, nextPath);
-            }
-        }
-    }
-//
-//    /**
-//     * 用深度，url（书签）或者标题(目录)，父级标题 做唯一标识
-//     *
-//     * @param book 当前书签
-//     * @param deep 层级
-//     * @return 书签的路径组成的key
-//     */
-//    private String buildKey(BookMark book, JSONObject parentBook, int deep) {
-//        String parentTitle = parentBook == null ? "" : "_" + parentBook.getString("title");
-//        String key = "" + deep + parentTitle;
-//        if (!StringUtils.isNullOrEmpty(book.getUrl())) {
-//            key += "_" + book.getUrl();
-//        } else {
-//            key += "_" + book.getTitle();
-//        }
-//        return key;
-//    }
-
-    @Override
-    public void saveBookMark(BookMark book) {
-        bookMarkRepository.save(book);
-    }
 }
