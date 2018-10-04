@@ -13,41 +13,39 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/u")
+@RequestMapping("/api/v1/u")
 public class UserController {
     @Autowired
     private UserService userService;
     @Resource
     private RedisTemplate<String,Object> redisTemplate;
-    @RequestMapping(method = RequestMethod.POST)
-    public Result createUser(@RequestParam("user") User user, HttpServletRequest httpServletRequest) {
+    @PostMapping()
+    public Result createUser(@RequestBody User user, HttpServletRequest httpServletRequest) {
         userService.createUser(user);
         return new Result(0, "success");
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public Result delete(@RequestParam("uid") String uid, HttpServletRequest httpServletRequest) {
-        //userService.createUser(user);
+    @DeleteMapping("/{uid}")
+    public Result delete(@PathVariable("uid") String uid, HttpServletRequest httpServletRequest) {
         return new Result(0, "success");
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @PutMapping
     public Result update(@RequestParam("user") User user, HttpServletRequest httpServletRequest) {
         userService.createUser(user);
         return new Result(0, "success");
     }
 
-    @RequestMapping(value = "/{uid}", method = RequestMethod.GET)
-    public Result get(@RequestParam("user") User user, HttpServletRequest httpServletRequest) {
-        // userService.createUser(user);
+    @GetMapping(value = "/{uid}")
+    public Result get(@RequestParam("uid") String uid, HttpServletRequest httpServletRequest) {
         return new Result(0, "success");
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping("/list")
     public Result queryUsers(User user, HttpServletRequest httpServletRequest) {
-        // userService.createUser(user);
         return new Result(0, "success");
     }
+
     @RequestMapping("/hello/{uid}")
     public Result hello(@PathVariable String uid, HttpServletRequest httpServletRequest) {
         redisTemplate.opsForValue().set(uid,"true",10,TimeUnit.HOURS);
