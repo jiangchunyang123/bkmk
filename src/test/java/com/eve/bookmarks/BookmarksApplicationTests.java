@@ -23,8 +23,7 @@ public class BookmarksApplicationTests {
     @Test
     public void createUser() {
         User user = new User();
-        user.setUid("god");
-        user.setUname("chunyang");
+        user.setUserName("god");
         user.setPassword("666");
         user.setState(1);
         user.setVersion(0l);
@@ -34,7 +33,8 @@ public class BookmarksApplicationTests {
 
     @Test
     public void testRedis() {
-        redisTemplate.opsForValue().set("l", "456");
-        System.out.printf( redisTemplate.opsForValue().get("l").toString());
+        redisTemplate.opsForValue().set("777", "456");
+        String val = redisTemplate.opsForValue().get("777").toString();
+        assert val!=null;
     }
 }

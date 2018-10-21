@@ -27,18 +27,18 @@ public class ScheduleController {
         return new Result(1, "success");
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public Result delete(@RequestParam("id") String uid, HttpServletRequest httpServletRequest) {
+    @DeleteMapping(value = "/{id}")
+    public Result delete(@PathVariable("id") String uid) {
         return new Result(1, "success");
     }
 
     @PutMapping
-    public Result update(@RequestParam("schedule") Schedule schedule, HttpServletRequest httpServletRequest) {
+    public Result update(@RequestParam("schedule") Schedule schedule) {
         scheduleService.insert(schedule);
         return new Result(1, "success");
     }
     @PutMapping(value="/rcd")
-    public Result updateRcd(ScheduleRecord record, HttpServletRequest httpServletRequest) {
+    public Result updateRcd(ScheduleRecord record) {
         scheduleService.updateRecord(record);
         return new Result(1, "success");
     }
@@ -49,13 +49,13 @@ public class ScheduleController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public Result queryUsers(Schedule schedule, HttpServletRequest httpServletRequest) {
+    public Result queryUsers(Schedule schedule) {
         List<Schedule> scheduleList = scheduleService.queryList(schedule);
         return new Result(1, "success", scheduleList);
     }
     @RequestMapping(value="/rcd",method = RequestMethod.GET)
-    public Result querySchRecord(ScheduleRecord schedule, HttpServletRequest httpServletRequest) {
-        Object val = redisTemplate.opsForValue().get(schedule.getUser().getUid());
+    public Result querySchRecord(ScheduleRecord schedule) {
+        Object val = redisTemplate.opsForValue().get(schedule.getUser().getId());
         if(val==null){
             return new Result(0,"sessionout");
         }

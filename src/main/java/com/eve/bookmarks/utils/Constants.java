@@ -22,4 +22,8 @@ public class Constants {
     public static int STATE_ENABLE = 1;
     public static int STATE_DISABLE = 0;
 
+    //在线离线
+    public static int ONLINE = 1;
+    public static int OFFLINE = -1;
+
 }

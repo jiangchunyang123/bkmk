@@ -11,15 +11,12 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User implements Serializable {
     @Id
-    @GenericGenerator(name="idGenerator", strategy="uuid") //这个是hibernate的注解/生成32位UUID
-    @GeneratedValue(generator="idGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(length = 32,unique = true)
-    private String id;
+    private int id;
 
-    @Column(length = 15,unique = true)
-    private String uid;
-    @Column(length = 10)
-    private String uname;
+    @Column(length = 30)
+    private String userName;
     @Column(length = 40)
     private String password;
     @Column(length = 25)
@@ -65,28 +62,20 @@ public class User implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getUid() {
-        return uid;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getUname() {
-        return uname;
-    }
-
-    public void setUname(String uname) {
-        this.uname = uname;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {

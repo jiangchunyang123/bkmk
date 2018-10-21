@@ -53,7 +53,7 @@ private ScheduleRepository scheduleRepository;
     }
     @Override
     public List<ScheduleRecord> queryRecordList(ScheduleRecord record) {
-        User user = userRepository.getByUid(record.getUser().getUid());
+        User user = userRepository.getById(record.getUser().getId());
 
         Sort sort = null;
         if ("Desc".equals(record.direction)) {

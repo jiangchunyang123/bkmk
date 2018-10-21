@@ -5,7 +5,7 @@ import com.eve.bookmarks.entitys.User;
 public interface UserService {
     int createUser(User user);
 
-    User findByUid(String uid);
+    User get(int id);
 
-    User get(String id);
+    User getByUserName(String userName);
 }

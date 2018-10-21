@@ -8,15 +8,15 @@ import javax.persistence.Id;
 public class BookMarkMongo {
     @Id
     private String id;
-    private String uid;
+    private int uid;
     private String value;
     private Long version;
 
-    public String getUid() {
+    public int getUid() {
         return uid;
     }
 
-    public void setUid(String uid) {
+    public void setUid(int uid) {
         this.uid = uid;
     }
 
@@ -33,7 +33,7 @@ public class BookMarkMongo {
     public BookMarkMongo(String value) {
         this.value = value;
     }
-    public BookMarkMongo(String value,String uid,Long version) {
+    public BookMarkMongo(String value,int uid,Long version) {
         this.value = value;
         this.uid = uid;
         this.version = version;

@@ -67,7 +67,7 @@ public class BookMarkServiceImpl implements BookMarkService {
      */
     @Override
     public void saveBookMarks(Object node, User user) {
-        BookMarkMongo bookMarkMongo = new BookMarkMongo(node.toString(), user.getUid(),user.getVersion());
+        BookMarkMongo bookMarkMongo = new BookMarkMongo(node.toString(), user.getId(),user.getVersion());
         mongoTemplate.save(bookMarkMongo, Constants.BOOK_MARK_MONGODB_NAME);
         //更新user中的mongoid
         user.setMongoId(bookMarkMongo.getId());
