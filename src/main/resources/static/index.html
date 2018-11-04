@@ -1,10 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/tinytable.js"></script>
+    <script src="js/bootstrap-datetimepicker.js"></script>
+    <script src="js/template-web.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap-datetimepicker.css">
+    <style>
+        .toolbar {
+            margin: 10px 5px 5px 10px;
+        }
+    </style>
 </head>
 <body>
-This is main page
+
+<nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+    <ul class="navbar-nav">
+        <li class="nav-item active">
+            <a class="nav-link" href="index.html">首页</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="schTable.html">计划列表</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="blog.html">博客</a>
+        </li>
+    </ul>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="toolbar">
+            <button class="newPlan">新增</button>
+            <button class="queryBtn">查询</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <table id="mainTable" class="table">
+            </table>
+        </div>
+    </div>
+
+</div>
+<!--弹出表单 -->
+<div class="modal fade" tabindex="-1" role="dialog" id="detail">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <!--<h4 class="modal-title">新增计划</h4>-->
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group ">
+                        <label for="title" class="control-label">标题</label>
+                        <div>
+                            <input class="form-control" id="title" placeholder="请输入计划标题">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstDeadLine">最后完成期限</label>
+                        <input type="text" class="form-control" value="2012-05-15 21:05" id="firstDeadLine"
+                               data-date-format="yyyy-mm-dd hh:ii">
+                    </div>
+                    <div class="form-group">
+                        <label for="scheduleNum">计划间隔</label>
+                        <input class="form-control " id="scheduleNum" placeholder="间隔">
+                        <div class="dropdown">
+                            <label class="radio-inline">
+                                <input type="radio" name="optionsRadiosinline" id="optionsRadios1" value="1" checked>日
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="optionsRadiosinline" id="optionsRadios2" value="2" >周
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="optionsRadiosinline" id="optionsRadios3" value="3">月
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="optionsRadiosinline" id="optionsRadios4" value="4">年
+                            </label>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="remark" >备注</label>
+                            <textarea class="form-control" id="remark"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="remark" class="control-label">用户</label>
+                            <input name="user.id" id="userId">
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div align="center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary save">保存</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 </body>
 </html>

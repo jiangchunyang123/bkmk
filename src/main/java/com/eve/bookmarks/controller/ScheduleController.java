@@ -4,6 +4,8 @@ import com.eve.bookmarks.entitys.Result;
 import com.eve.bookmarks.entitys.Schedule;
 import com.eve.bookmarks.entitys.ScheduleRecord;
 import com.eve.bookmarks.entitys.User;
+import com.eve.bookmarks.entitys.vo.QueryParam;
+import com.eve.bookmarks.entitys.vo.ScheduleVo;
 import com.eve.bookmarks.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,11 +22,12 @@ public class ScheduleController {
     @Autowired
     private ScheduleService scheduleService;
     @Resource
-    private RedisTemplate<String,Object> redisTemplate;
-    @RequestMapping(method = RequestMethod.POST)
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @PostMapping
     public Result create(Schedule schedule) {
         scheduleService.insert(schedule);
-        return new Result(1, "success");
+        return Result.Success();
     }
 
     @DeleteMapping(value = "/{id}")
@@ -35,31 +38,34 @@ public class ScheduleController {
     @PutMapping
     public Result update(@RequestParam("schedule") Schedule schedule) {
         scheduleService.insert(schedule);
-        return new Result(1, "success");
+        return Result.Success();
     }
-    @PutMapping(value="/rcd")
-    public Result updateRcd(ScheduleRecord record) {
+
+    @PutMapping(value = "/rcd")
+    public Result updateRcd(ScheduleVo record) {
         scheduleService.updateRecord(record);
-        return new Result(1, "success");
+        return Result.Success();
     }
+
     @GetMapping(value = "/{uid}")
     public Result get(@PathVariable("uid") Long id) {
         Schedule schedule = scheduleService.findById(id);
-        return new Result(1, "success", schedule);
+        return Result.Success(schedule);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public Result queryUsers(Schedule schedule) {
+    @GetMapping
+    public Result query(Schedule schedule) {
         List<Schedule> scheduleList = scheduleService.queryList(schedule);
-        return new Result(1, "success", scheduleList);
+        return Result.Success(scheduleList);
     }
-    @RequestMapping(value="/rcd",method = RequestMethod.GET)
-    public Result querySchRecord(ScheduleRecord schedule) {
-        Object val = redisTemplate.opsForValue().get(schedule.getUser().getId());
-        if(val==null){
-            return new Result(0,"sessionout");
-        }
-        List<ScheduleRecord> scheduleList = scheduleService.queryRecordList(schedule);
+
+    @GetMapping(value = "/rcd")
+    public Result querySchRecord(QueryParam param) {
+//        Object val = redisTemplate.opsForValue().get(schedule.getUser().getId());
+//        if(val==null){
+//            return new Result(0,"sessionout");
+//        }
+        List<ScheduleRecord> scheduleList = scheduleService.queryRecordList(param);
         return Result.Success(scheduleList);
     }
 

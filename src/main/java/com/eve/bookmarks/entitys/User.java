@@ -13,7 +13,7 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(length = 32,unique = true)
-    private int id;
+    private Long id;
 
     @Column(length = 30)
     private String userName;
@@ -62,11 +62,11 @@ public class User implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

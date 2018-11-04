@@ -3,31 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>计划时刻表</title>
-    <script src="http://localhost:8090/js/jquery-3.3.1.min.js"></script>
-    <script src="http://localhost:8090/js/bootstrap-datetimepicker.js"></script>
-    <script src="http://localhost:8090/js/common.js"></script>
-    <script src="http://localhost:8090/js/bootstrap.js"></script>
-    <script src="http://localhost:8090/js/schList.js"></script>
-    <script src="http://localhost:8090/js/template-web.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="http://localhost:8090/css/bootstrap.css">
-    <link rel="stylesheet" href="http://localhost:8090/css/button.css">
-    <link rel="stylesheet" href="http://localhost:8090/css/bootstrap-datetimepicker.css">
-    <link rel="stylesheet" href="http://localhost:8090/css/timeline.css">
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap-datetimepicker.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/schList.js"></script>
+    <script src="js/template-web.js"></script>
+
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/button.css">
+    <link rel="stylesheet" href="css/bootstrap-datetimepicker.css">
+    <link rel="stylesheet" href="css/timeline.css">
 
 </head>
 <body>
 
-<nav class="navbar navbar-default" role="navigation">
+<nav class="navbar navbar-expand-sm bg-primary navbar-dark">
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="#">计划列表</a>
         </div>
         <div>
-        <ul class="nav navbar-nav">
-            <li class="newPlan"><a href="#">新增计划</a></li>
-        </ul>
-    </div>
+            <ul class="nav navbar-nav">
+                <li class="newPlan"><a href="#">新增计划</a></li>
+            </ul>
+        </div>
         <div>
             <ul class="nav navbar-nav">
                 <li class="planList"><a href="#">计划详情</a></li>
@@ -36,7 +38,7 @@
     </div>
 </nav>
 <!-- 布局-->
-<div class="container" >
+<div class="container">
     <div class="row">
         <div class="col-sm-6 ">
             <div class="page-header">
@@ -64,25 +66,20 @@
             <div class="modal-body">
                 <form class="form-horizontal" role="form">
                     <div class="form-group ">
-
-                        <label for="title" class="col-sm-3 control-label">标题</label>
-                        <div class="col-sm-9">
+                        <label for="title" class="control-label">标题</label>
+                        <div>
                             <input class="form-control" id="title" placeholder="请输入计划标题">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="firstDeadLine" class="col-sm-3 control-label">最后完成期限</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" value="2012-05-15 21:05" id="firstDeadLine"
-                                   data-date-format="yyyy-mm-dd hh:ii">
-                        </div>
+                        <label for="firstDeadLine">最后完成期限</label>
+                        <input type="text" class="form-control" value="2012-05-15 21:05" id="firstDeadLine"
+                               data-date-format="yyyy-mm-dd hh:ii">
                     </div>
                     <div class="form-group">
-                        <label for="title" class="col-sm-3 control-label">计划间隔</label>
-                        <div class="col-sm-2">
-                            <input class="form-control" id="scheduleNum" placeholder="间隔">
-                        </div>
-                        <div class="dropdown col-sm-7">
+                        <label for="scheduleNum">计划间隔</label>
+                        <input class="form-control" id="scheduleNum" placeholder="间隔">
+                        <div class="dropdown">
                             <label class="radio-inline">
                                 <input type="radio" name="optionsRadiosinline" id="optionsRadios5" value="2" checked>日
                             </label>
@@ -90,7 +87,7 @@
                                 <input type="radio" name="optionsRadiosinline" id="optionsRadios4" value="3">月
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="optionsRadiosinline" id="optionsRadios3" value="4" >年
+                                <input type="radio" name="optionsRadiosinline" id="optionsRadios3" value="4">年
                             </label>
 
                         </div>
@@ -130,8 +127,8 @@
 
             <div class="timeline-body">
                 <!--  <p>{{schedule.remark}}</p>-->
-                <div class="buttons" align="right" >
-                <span class="timeline-title">{{schedule.title}}</span>
+                <div class="buttons" align="right">
+                    <span class="timeline-title">{{schedule.title}}</span>
                     {{if state==1}}
                     <p>
                         <small class="text-muted">
@@ -139,7 +136,7 @@
                         </small>
                     </p>
                     {{/if}}
-                {{if state!=1}}
+                    {{if state!=1}}
                     <button type="button" class="btn btn-primary btn-xs check">
                         <span class="glyphicon glyphicon-ok"></span>打卡
                     </button>
@@ -147,7 +144,7 @@
                         <span class="glyphicon glyphicon-remove"></span>放弃
                     </button>
 
-                {{/if}}
+                    {{/if}}
                 </div>
             </div>
         </div>

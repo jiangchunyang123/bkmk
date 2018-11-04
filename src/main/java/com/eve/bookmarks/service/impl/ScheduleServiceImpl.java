@@ -6,6 +6,8 @@ import com.eve.bookmarks.dao.UserRepository;
 import com.eve.bookmarks.entitys.Schedule;
 import com.eve.bookmarks.entitys.ScheduleRecord;
 import com.eve.bookmarks.entitys.User;
+import com.eve.bookmarks.entitys.vo.QueryParam;
+import com.eve.bookmarks.entitys.vo.ScheduleVo;
 import com.eve.bookmarks.service.ScheduleService;
 import com.eve.bookmarks.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,7 @@ private ScheduleRepository scheduleRepository;
      * @param schedule
      */
     @Override
-    public void appendRecord(Schedule schedule) {
+    public void appendRecord(Schedule schedule ) {
         //创建时自动创建一个代办
         ScheduleRecord record = scheduleRecordRepository.findFirstByScheduleOrderByIdDesc(schedule);
         ScheduleRecord next =schedule.builderNextRecord(record);
@@ -49,31 +51,28 @@ private ScheduleRepository scheduleRepository;
 
     @Override
     public List<Schedule> queryList(Schedule schedule) {
+        if(schedule.getId()==null){
+            schedule.setId(1l);
+        }
       return  scheduleRepository.findAllByUserId(schedule.getUser().getId());
     }
     @Override
-    public List<ScheduleRecord> queryRecordList(ScheduleRecord record) {
-        User user = userRepository.getById(record.getUser().getId());
-
-        Sort sort = null;
-        if ("Desc".equals(record.direction)) {
-            sort = new Sort(Sort.Direction.DESC, record.descName);
-        } else {
-            sort = new Sort(Sort.Direction.ASC, record.descName);
-        }
-        Pageable pageable = PageRequest.of(record.pageIndex, record.pageSize, sort);
-
-        return scheduleRecordRepository.findAllByUserAndStateIs(user,0,pageable);
+    public List<ScheduleRecord> queryRecordList(QueryParam record) {
+        return scheduleRecordRepository.querySchRecordList(record.getStartTime(),record.getEndTime(),record.getUserId());
     }
+
+
     @Override
     public Schedule findById(Long id) {
         return scheduleRepository.findById(id).get();
     }
 
     @Override
-    public void updateRecord(ScheduleRecord record) {
-        scheduleRecordRepository.updateRecordState(record.getState(),record.getId());
-        record = scheduleRecordRepository.findById(record.getId()).get();
-        appendRecord(record.getSchedule());
+    public void updateRecord(ScheduleVo record) {
+        scheduleRecordRepository.updateRecordState(record.getState(),record.getRecordId());
+        ScheduleRecord scheduleRecord = scheduleRecordRepository.findById(record.getSchId()).get();
+        if(record.getState()!=-1){
+            appendRecord(scheduleRecord.getSchedule());
+        }
     }
 }

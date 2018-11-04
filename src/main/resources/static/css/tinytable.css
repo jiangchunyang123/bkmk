@@ -1,0 +1,71 @@
+/* CSS Document */
+tinytable.body {
+    font: 14px/1.43 "Helvetica Neue", Tahoma, "Microsoft YaHei", Arial;
+    color: #253443;
+    margin: 0 auto;
+    padding: 0 auto;
+}
+tinytable.table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    background: #FFF;
+    font-size: 12px;
+    width: 100%;
+    border: 1;
+    width: 100%;
+}
+tinytable.thead {
+    display: table-header-group;
+    vertical-align: middle;
+    border-color: inherit;
+}
+tinytable.tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+}
+tinytable.table thead tr {
+    background-color: #E6F0FF;
+}
+tinytable table thead tr th {
+    padding: 5px 8px;
+    font-weight: normal;
+    color: #999;
+    border-bottom: 1px solid #B50802;
+    vertical-align: bottom;
+    line-height: 20px;
+}
+tinytable.tbody {
+    display: table-row-group;
+    vertical-align: middle;
+    border-color: inherit;
+}
+tinytable.table tbody tr td {
+    padding: 8px;
+    border-top: 0px;
+    border-bottom: 1px solid #DDD;
+    vertical-align: middle;
+    line-height: 20px;
+}
+table tfoot tr td {
+    width: 100%;
+    background-color: #F4F4F4;
+    height: 20px;
+    padding: 8px 0px;
+    color: #000;
+}
+table tfoot tr td input {
+    width: 30px;
+    float: left;
+}
+table tfoot tr td span {
+    display: inline-block;
+    cursor: pointer;
+    height:20px;
+    padding:0 10px;
+    float: left;
+}
+.mouseover {
+    background-color: #EAF2FF;
+    color: #000;
+}

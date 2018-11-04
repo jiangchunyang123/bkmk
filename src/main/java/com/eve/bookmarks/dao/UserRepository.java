@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface UserRepository extends CrudRepository<User, String> {
-    User getById(int uid);
+public interface UserRepository extends CrudRepository<User, Long> {
+    User getById(Long uid);
 
     User getByUserName(String userName);
 }

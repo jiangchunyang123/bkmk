@@ -18,6 +18,9 @@ public class Result {
         result.setData(data);
         return result;
     }
+    public static Result Success(){
+        return Success(null);
+    }
     /**
      *
      * @param message 消息
