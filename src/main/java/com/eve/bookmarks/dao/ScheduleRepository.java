@@ -10,4 +10,5 @@ import java.util.List;
 
 public interface ScheduleRepository extends CrudRepository<Schedule, Long>, JpaRepository<Schedule, Long> {
     List<Schedule> findAllByUserId(Long userId);
+
 }

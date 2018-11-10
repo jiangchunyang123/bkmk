@@ -1,8 +1,11 @@
 package com.eve.bookmarks;
 
 import com.alibaba.fastjson.JSONObject;
+import com.eve.bookmarks.entitys.Schedule;
 import com.eve.bookmarks.entitys.User;
+import com.eve.bookmarks.service.ScheduleService;
 import com.eve.bookmarks.service.UserService;
+import com.eve.bookmarks.task.ScheduleTaskConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +14,23 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class BookmarksApplicationTests {
+
     @Autowired
     UserService userService;
+
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    ScheduleTaskConfig scheduleTaskConfig;
+
+    @Autowired
+    private ScheduleService scheduleService;
 
     @Test
     public void createUser() {
@@ -37,4 +49,38 @@ public class BookmarksApplicationTests {
         String val = redisTemplate.opsForValue().get("777").toString();
         assert val!=null;
     }
+
+    /**
+     * 测试邮件发送系统，是否能按照指定规则发送
+     */
+    @Test
+    public void mailTest(){
+        initMailMsg();
+        scheduleTaskConfig.senMail();
+        destroyMailMsg();
+    }
+
+    private void destroyMailMsg() {
+
+    }
+
+    private void initMailMsg() {
+        Schedule nearEndsMail = Schedule.newDefault();
+        nearEndsMail.setTitle("test mail send");
+        nearEndsMail.setFirstDeadLine(LocalDateTime.now().plusMinutes(5));
+        nearEndsMail.setUser(userService.get(1l));
+
+        scheduleService.insert(nearEndsMail);
+
+        scheduleService.appendRecord(nearEndsMail);
+
+        Schedule overTimeMail = new Schedule();
+        overTimeMail.setTitle("test mail send overtime");
+        overTimeMail.setFirstDeadLine(LocalDateTime.now().plusMinutes(-5));
+        overTimeMail.setUser(userService.get(1l));
+        scheduleService.insert(overTimeMail);
+        scheduleService.appendRecord(overTimeMail);
+
+    }
+
 }

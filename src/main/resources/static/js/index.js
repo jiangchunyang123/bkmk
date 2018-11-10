@@ -10,17 +10,16 @@ $(document).ready(function () {
         todayBtn: true,
         keyboardNavigation: true
     });
-    $('.queryBtn').on('click',function(){
+    $('.queryBtn').on('click', function () {
         loadSchList();
     });
 
 
-
     function loadSchList() {
         var now = new Date();
-        var tomorrow = new Date(now.getTime()+24*3600*1000);
+        var tomorrow = new Date(now.getTime() + 24 * 3600 * 1000);
         var endTime = dateEnd(tomorrow);
-        var yestoday = new Date(now.getTime()-24*3600*1000);
+        var yestoday = new Date(now.getTime() - 24 * 3600 * 1000);
         var startTime = dateStart(yestoday);
         var result = [];
         var param = "?userId=1&startTime=" + startTime + "&endTime=" + endTime;
@@ -30,45 +29,93 @@ $(document).ready(function () {
             bindToolbar();
         });
     }
+
     function bindToolbar() {
-            table.find("tr").each(function(){
-                console.log($(this));
-                var schId = $(this).attr("schId");
-                var finishBtn = $(this).find(".finish");
-                finishBtn.on("click",function(){
-                   updateSchRcd(1,schId);
-                });
-                var giveupBtn = $(this).find(".giveup");
-                giveupBtn.on("click",function(){
-                   updateSchRcd(-1,schId);
-                });
+        table.find("tr").each(function () {
+            var schId = $(this).attr("schId");
+            var finishBtn = $(this).find(".finish");
+            finishBtn.on("click", function () {
+                updateSchRcd(1, schId);
             });
+            var giveupBtn = $(this).find(".giveup");
+            giveupBtn.on("click", function () {
+                updateSchRcd(-1, schId);
+            });
+        });
     }
 
-    function updateSchRcd(state,id){
-
+    function updateSchRcd(state, id) {
+        $.ajax({
+            url: "/sch/rcd",
+            type: "post",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify({
+                state: state,
+                recordId: id
+            }),
+            timeout: 20000,
+            success: function (r) {
+                if (r.state === 1) {
+                    alert("更新成功");
+                    loadSchList();
+                } else {
+                    alert("更新失败！");
+                }
+            },
+            error: function (xhr, textstatus, thrown) {
+            }
+        });
     }
+
     loadSchList();
 
     function initTable(data) {
 
         table.grid({
-            id:"mainTable",
-            data:data,
-            columns: [
-                {field:'ck',checkbox:true},
-                { field: 'id', title: '序号', width:100, align: 'left'},
-                { field: 'schedule.title', title: '计划内容', width: 150, align: 'left' },
-                { field: 'deadLine', title: '最后期限', width: 50, align: 'left' }
-            ],
-            isoddcolor:false,
-            pagination:false,
-            searchnation:false,
-            pagesize:20
-        });
+                id: "mainTable",
+                data: data,
+                trFormatter: function (tr, rowData) {
+                    if (rowData.state === 1) {
+                        tr.addClass("success");
+                    } else if (rowData.state === -1) {
+                        tr.addClass("danger");
+
+                    } else if (rowData.state === 0) {
+                        tr.addClass("info");
+                    }
+                },
+                columns:
+                    [
+                        {field: 'ck', checkbox: true},
+                        {field: 'index', title: '序号', width: 100, align: 'left'},
+                        {field: 'schedule.title', title: '计划内容', width: 100, align: 'left'},
+                        {field: 'remark', title: '备注', width: 50, align: 'left'},
+                        {field: 'deadLine', title: '最后期限', width: 50, align: 'left'},
+                        {
+                            field: 'state', title: '状态', width: 50, align: 'left', formatter: function (row, data) {
+                                if (data === 1) {
+                                    return "完成";
+                                } else if (data === -1) {
+                                    return "放弃";
+                                } else {
+                                    return "待办";
+                                }
+
+                            }
+                        }
+                    ],
+                isoddcolor:
+                    false,
+                pagination:
+                    false,
+                searchnation:
+                    false,
+                pagesize:
+                    20
+            }
+        );
     }
-
-
 
 
     $newBtn.on('click', function () {
@@ -98,7 +145,7 @@ $(document).ready(function () {
                 if (result.state == 1) {
                     alert("保存成功！");
                     $("#detail").modal('hide');
-                    queryRecords();
+                    loadSchList();
                 } else {
                     alert("保存失败：", result.message);
                 }
@@ -146,4 +193,5 @@ $(document).ready(function () {
         d = d < 10 ? ('0' + d) : d;
         return y + '-' + m + '-' + d + ' 23:59:59';
     };
-});
+})
+;

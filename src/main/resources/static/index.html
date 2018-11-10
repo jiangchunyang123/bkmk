@@ -15,7 +15,10 @@
     <link rel="stylesheet" href="css/bootstrap-datetimepicker.css">
     <style>
         .toolbar {
-            margin: 10px 5px 5px 10px;
+            margin: 10px 5px 20px 20px;
+        }
+        .btn{
+            margin: 0px 5px 0px 5px;
         }
     </style>
 </head>
@@ -36,14 +39,19 @@
 </nav>
 <div class="container">
     <div class="row">
-        <div class="toolbar">
+        <div class="toolbar"  align="right">
             <button class="newPlan">新增</button>
+
+            <input type="text" id="nametext" placeholder="请输入计划标题">
             <button class="queryBtn">查询</button>
+            <button class="queryBtn">删除</button>
         </div>
     </div>
     <div class="row">
+
         <div class="col">
-            <table id="mainTable" class="table">
+            <h4>近日计划列表</h4>
+            <table id="mainTable" class="table table-condensed">
             </table>
         </div>
     </div>
@@ -79,7 +87,7 @@
                                 <input type="radio" name="optionsRadiosinline" id="optionsRadios1" value="1" checked>日
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="optionsRadiosinline" id="optionsRadios2" value="2" >周
+                                <input type="radio" name="optionsRadiosinline" id="optionsRadios2" value="2">周
                             </label>
                             <label class="radio-inline">
                                 <input type="radio" name="optionsRadiosinline" id="optionsRadios3" value="3">月
@@ -91,12 +99,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="remark" >备注</label>
-                            <textarea class="form-control" id="remark"></textarea>
+                        <label for="remark">备注</label>
+                        <textarea class="form-control" id="remark"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="remark" class="control-label">用户</label>
-                            <input name="user.id" id="userId">
+                        <input name="user.id" id="userId">
                     </div>
 
                 </form>
@@ -110,5 +118,17 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<!--提示框-->
+<div class="modal fade bd-example-modal-sm" id="myModal" role="dialog" data-backdrop="false" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <p class="text-center mb-0">
+                <i class="fa fa-check-circle text-success mr-1" aria-hidden="true"></i>
+                {{message}}
+            </p>
+        </div>
+    </div>
+</div>
 </body>
 </html>

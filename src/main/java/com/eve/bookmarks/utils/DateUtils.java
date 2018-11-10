@@ -1,7 +1,5 @@
 package com.eve.bookmarks.utils;
 
-import org.apache.tomcat.jni.Local;
-
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -36,9 +34,9 @@ public class DateUtils {
 
         switch (type) {
             case 1:
-                return dateTime.plusHours(num);
-            case 2:
                 return dateTime.plusDays(num);
+            case 2:
+                return dateTime.plusWeeks(num);
             case 3:
                 return dateTime.plusMonths(num);
             case 4:

@@ -1,5 +1,6 @@
 package com.eve.bookmarks.entitys;
 
+import com.eve.bookmarks.utils.Constants;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -20,7 +21,7 @@ public class ScheduleRecord extends PageFilter implements Serializable {
      * 标识状态：默认0
      */
     @Column(length = 2)
-    private int state = 0;
+    private int state = Constants.TODO;
     /**
      * 更新时间戳
      */
@@ -33,12 +34,16 @@ public class ScheduleRecord extends PageFilter implements Serializable {
     @Column
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime deadLine;
+
     @JoinColumn
     @ManyToOne(fetch = FetchType.LAZY)
     private Schedule schedule;
     @JoinColumn
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    @Column
+    private String remark;
 
     public ScheduleRecord(LocalDateTime deadLine, LocalDateTime createTime, Schedule schedule, User user) {
         this.createTime = createTime;
@@ -49,6 +54,14 @@ public class ScheduleRecord extends PageFilter implements Serializable {
 
     public ScheduleRecord() {
 
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public LocalDateTime getCreateTime() {

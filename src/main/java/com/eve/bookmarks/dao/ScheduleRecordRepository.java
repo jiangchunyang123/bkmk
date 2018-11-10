@@ -24,4 +24,8 @@ public interface ScheduleRecordRepository extends CrudRepository<ScheduleRecord,
 
     @Query("from ScheduleRecord rcd where rcd.deadLine <= :endTime and rcd.deadLine >:startTime and rcd.user.id = :userId order by rcd.state,rcd.deadLine ")
     List<ScheduleRecord> querySchRecordList(@Param("startTime") LocalDateTime startTime, @Param("endTime")LocalDateTime endTime, @Param("userId")Long userid );
+
+    List<ScheduleRecord> queryAllByDeadLineBeforeAndStateEquals(LocalDateTime dealLine,int state);
+
+    List<ScheduleRecord> queryAllByDeadLineBetweenAndStateEquals(LocalDateTime startTime,LocalDateTime endTime,int state);
 }

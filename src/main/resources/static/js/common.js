@@ -30,3 +30,19 @@ Date.prototype.isTomorrow = function () {
     var dayStr = new Date().getDate();
     return this.Format("yyyyMMdd") == new Date().Format("yyyyMMdd");
 }
+$.put = function(url,data,callback){
+    $.ajax({
+        url:url,
+        type:"put",
+        contentType:"application/json",
+        dataType:"json",
+        data:data,
+        timeout:20000,
+        success:function(msg){
+            callback(msg);
+        },
+        error:function(xhr,textstatus,thrown){
+
+        }
+    });
+};

@@ -26,4 +26,10 @@ public class Constants {
     public static int ONLINE = 1;
     public static int OFFLINE = -1;
 
+    public static int TODO = 0;
+    public static int FAILED = 1;
+    public static int SUCCESS = 2;
+    public static int END = -1;
+
+
 }

@@ -20,7 +20,8 @@ $(function () {
             pageindex: 1,
             //总页数
             totalpage: null,
-            data: []
+            data: [],
+            trFormatter:function(row,data){}
         }
         this.settings = $.extend({}, this.defaults, opt);
     }
@@ -76,19 +77,13 @@ $(function () {
                 var $tr = $("table[id='" + this._id + "'] thead tr");
                 if (headcols[i].field === 'ck') {
                      $tr.append("<th width='50px' align='center'><input name='chkall' type='checkbox'></th>");
-                } else {
+                } else if(headcols[i].field === 'index'){
+                    $tr.append("<th width='50px' align='center'>序号</th>");
+                }else {
                     $tr.append("<th width=" + headcols[i].width + " align=" + headcols[i].align + ">" + headcols[i].title + "</th>");
                 }
             }
-            $tr.append("<th width=60 align='center'>操作</th>");
-        },
-        getval: function (rowDetail, field) {
-            var valArr = field.split("\.");
-            var val = rowDetail;
-            for(var index in valArr){
-               val = val[valArr[index]];
-            }
-            return val;
+            $tr.append("<th width='60px' align='center'><a>操作</a></th>");
         },
         //循环添加行
         createTableBody: function (pn) {
@@ -100,12 +95,15 @@ $(function () {
             for (var i = 0; i < _op.settings.data.length; i++) {
                 if (i === _op.settings.data.length) break;
                 var scheduleRecord= _op.settings.data[i];
-                row += "<tr schId='"+scheduleRecord.id+"'>";
+                row += "<tr schId='"+scheduleRecord.id+"' style='background-color: "+getTrClass(scheduleRecord.state)+"'>";
                 for (var j = 0; j < columns.length; j++) {
                     if (columns[j].field === 'ck') {
                          row += '<td width="50px" align="center"><input name="chk"  type="checkbox"></td>';
+                    }else if(columns[j].field === 'index'){
+                        var index = i+1;
+                        row+="<td width='50px' align='center'>"+index+"</td>";
                     }else {
-                        var val = this.getval(scheduleRecord,columns[j].field);
+                        var val = this.getval(scheduleRecord,columns[j].field,columns[j].formatter);
                         var td = document.createElement("td");
                         td.setAttribute("width",columns[j].width);
                         td.setAttribute("align",columns[j].align);
@@ -115,13 +113,30 @@ $(function () {
                             + val + '</td>';
                     }
                 }
-                row += "<td><a class=\"btn btn-primary btn-sm finish\">完成</a>" +
-                    "<a class=\"btn btn-danger btn-sm giveup\">放弃</a></td></tr>";
+                if(scheduleRecord.state===0){
+                    row += "<td align='center'><a class=\"btn btn-primary btn-sm finish\">完成</a>" +
+                        "<a class=\"btn btn-primary btn-sm giveup\">放弃</a></td>";
+                }else{
+                    row+='<td></td>'
+                }
+
+                row+="</tr>";
             }
 
             $("table[id='" + this._id + "'] tbody").empty().append(row);
             $("#currentpageIndex").html(pn);
             this.registermousehover();
+        },
+        getval: function (rowDetail, field,formatter) {
+            var valArr = field.split("\.");
+            var val = rowDetail;
+            for(var index in valArr){
+                val = val[valArr[index]];
+            }
+            if(formatter!=null){
+                val = formatter(rowDetail,val);
+            }
+            return val;
         },
         //初始化分页
         createTableFoot: function () {
@@ -240,5 +255,15 @@ $(function () {
         return this.each(function () {
             grid.init();
         });
+    }
+
+    function getTrClass(state){
+        if (state === 1) {
+            return "#f1f1fa";
+        } else if (state === -1) {
+            return "#dc3545";
+        } else if (state === 0) {
+            return "#17a2b8";
+        }
     }
 })

@@ -2,6 +2,7 @@ package com.eve.bookmarks.service;
 
 import com.eve.bookmarks.entitys.Schedule;
 import com.eve.bookmarks.entitys.ScheduleRecord;
+import com.eve.bookmarks.entitys.vo.MailMsg;
 import com.eve.bookmarks.entitys.vo.QueryParam;
 import com.eve.bookmarks.entitys.vo.ScheduleVo;
 
@@ -14,10 +15,17 @@ public interface ScheduleService {
 
     List<Schedule> queryList(Schedule schedule);
 
+    MailMsg queryDeadLineSchs();
+
     List<ScheduleRecord> queryRecordList(QueryParam record);
 
     Schedule findById(Long id);
 
     void updateRecord(ScheduleVo record);
 
+    void update(Schedule schedule);
+
+    void delete(Long id);
+
+    void deleteScd(Long id);
 }

@@ -60,6 +60,14 @@ public class Schedule implements Serializable {
     @Column(length = 10)
     private int scheduleNum;
 
+    public static Schedule newDefault(){
+        Schedule schedule = new Schedule();
+        schedule.setLevel(1);
+        schedule.setCircle(true);
+        schedule.setScheduleType(1);
+        schedule.setScheduleNum(1);
+       return schedule;
+    }
     public LocalDateTime getCreateTime() {
         return createTime;
     }
@@ -147,14 +155,14 @@ public class Schedule implements Serializable {
      * @return
      */
     public ScheduleRecord builderNextRecord(ScheduleRecord record) {
-        ScheduleRecord newRecord = null;
+        ScheduleRecord newRecord ;
         if (record == null) {
             newRecord = new ScheduleRecord(firstDeadLine, createTime, this, user);
         } else {
              newRecord = new ScheduleRecord();
             BeanUtils.copyProperties(record, newRecord);
             newRecord.setDeadLine(DateUtils.addMils(newRecord.getDeadLine(), scheduleType, scheduleNum));
-            newRecord.setState(0);
+            newRecord.setState(Constants.TODO);
             newRecord.setId(null);
         }
         return newRecord;

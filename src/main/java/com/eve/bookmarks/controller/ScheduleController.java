@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@RequestMapping("/sch")
+@RequestMapping(value = "/sch")
 public class ScheduleController {
     @Autowired
     private ScheduleService scheduleService;
@@ -35,14 +35,14 @@ public class ScheduleController {
         return new Result(1, "success");
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public Result update(@RequestParam("schedule") Schedule schedule) {
-        scheduleService.insert(schedule);
+        scheduleService.update(schedule);
         return Result.Success();
     }
 
-    @PutMapping(value = "/rcd")
-    public Result updateRcd(ScheduleVo record) {
+    @PostMapping(value = "/rcd",consumes = "application/json")
+    public Result updateRcd(@RequestBody ScheduleVo record) {
         scheduleService.updateRecord(record);
         return Result.Success();
     }
