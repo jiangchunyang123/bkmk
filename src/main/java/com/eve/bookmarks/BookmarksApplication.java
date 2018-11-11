@@ -24,7 +24,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @SpringBootApplication
-@MapperScan("com.eve.bookmarks")
+@MapperScan("com.eve.bookmarks.dao")
 public class BookmarksApplication {
 
     public static void main(String[] args) {

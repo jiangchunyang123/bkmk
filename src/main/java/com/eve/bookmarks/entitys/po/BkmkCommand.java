@@ -3,6 +3,7 @@ package  com.eve.bookmarks.entitys.po;
 import com.eve.bookmarks.utils.Constants;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.annotation.Generated;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 

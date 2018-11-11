@@ -1,7 +1,10 @@
 package com.eve.bookmarks.manager;
 
+import com.alibaba.fastjson.JSON;
 import com.eve.bookmarks.entitys.po.User;
 import com.eve.bookmarks.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -12,6 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class SessionManager implements ISessionManager {
+
+    Logger logger = LoggerFactory.getLogger(SessionManager.class);
+
     @Autowired
     UserService userService;
     @Autowired
@@ -38,12 +44,15 @@ public class SessionManager implements ISessionManager {
         String sessionId = UUID.randomUUID().toString();
 //        redisTemplate.opsForValue().set(sessionId, dbUser);
         sessions.put(sessionId, user);
+        logger.info("put a user :"+ JSON.toJSONString(user));
         return sessionId;
     }
 
     @Override
     public User getUser(String sessionId) {
-        return sessions.get(sessionId);
-//        return (User) redisTemplate.opsForValue().get(sessionId);
+        logger.info("sessions users :"+ JSON.toJSONString(sessions));
+        User user = sessions.get(sessionId);
+        logger.info("got user:"+user.getUserName());
+        return user;
     }
 }

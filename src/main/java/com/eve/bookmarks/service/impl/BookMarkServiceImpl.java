@@ -53,7 +53,7 @@ public class BookMarkServiceImpl implements BookMarkService {
 
     @Override
     public BookMark get(Long mysqlId) {
-       return  bookMarkMapper.selectByPrimaryKey(mysqlId);
+        return bookMarkMapper.selectByPrimaryKey(mysqlId);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class BookMarkServiceImpl implements BookMarkService {
      */
     @Override
     public void saveBookMarks(JSONArray node, User user) {
-        BookMarkMongo bookMarkMongo = new BookMarkMongo(node.toString(), user.getId(),user.getVersion());
+        BookMarkMongo bookMarkMongo = new BookMarkMongo(node.toString(), user.getUserName(), user.getVersion());
         mongoTemplate.save(bookMarkMongo, Constants.BOOK_MARK_MONGODB_NAME);
         //更新user中的mongoid
         user.setMongoId(bookMarkMongo.getId());
@@ -88,15 +88,25 @@ public class BookMarkServiceImpl implements BookMarkService {
 
         //本地的书签
         Map<String, BookMark> localMap = new HashMap<>();
-        BookMkTreeBuilder.travelAndTransform(localBkMarks, 0, localMap, null);
+        BookMkTreeBuilder.travelAndTransform(localBkMarks, 0, localMap, "");
 
         //数据库中存储的书签
         Map<String, BookMark> dbMap = new HashMap<>();
-        BookMarkMongo bookMarkDB = mongoTemplate.findById(user.getMongoId(), BookMarkMongo.class);
-        JSONArray bkmkJsonDb = JSON.parseArray(bookMarkDB.getValue());
-        Long dbVersion = Long.valueOf(bookMarkDB.getVersion());
+        JSONArray bkmkJsonDb = null;
+        Long dbVersion = null;
+        if(user.getMongoId()!=null){
+            BookMarkMongo bookMarkDB = mongoTemplate.findById(user.getMongoId(), BookMarkMongo.class);
 
-        BookMkTreeBuilder.travelAndTransform(bkmkJsonDb, 0, dbMap, null);
+            bkmkJsonDb = JSON.parseArray(bookMarkDB.getValue());
+            dbVersion = bookMarkDB.getVersion();
+            if(bkmkJsonDb!=null){
+                BookMkTreeBuilder.travelAndTransform(bkmkJsonDb, 0, dbMap, "");
+            }
+        } 
+        if(bkmkJsonDb ==null){
+            bkmkJsonDb = new JSONArray();
+            dbVersion = 0L;
+        }
 
         //首先执行从本地version开始所有命令,0 代表初次导入，不执行命令，直接合并，不做任何删除操作
         if (localVersion != 0) {
@@ -179,7 +189,7 @@ public class BookMarkServiceImpl implements BookMarkService {
      */
     private void createAddCommand(String path, BookMark bookmark, Long localVersion, Long dbVersion) {
         BkmkCommand bkmkCommand = BkmkCommand.buildCommand(path, bookmark, localVersion, dbVersion, 1);
-        bkmkCommandMapper.insert(bkmkCommand);
+        bkmkCommandMapper.save(bkmkCommand);
     }
 
     /**

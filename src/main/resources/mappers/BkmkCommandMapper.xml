@@ -111,10 +111,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.eve.bookmarks.entitys.po.BkmkCommand">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="save" parameterType="com.eve.bookmarks.entitys.po.BkmkCommand" useGeneratedKeys="true"  keyProperty="id">
     insert into bkmk_command (command, create_time, end_version, 
       path, start_version, state, 
       update_time, book_mark_mysql_id)

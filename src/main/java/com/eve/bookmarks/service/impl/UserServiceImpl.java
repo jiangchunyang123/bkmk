@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
         //生成MongoDBid
         BookMarkMongo bookMarkMongo = new BookMarkMongo("");
-        bookMarkMongo.setUid(user.getId());
+        bookMarkMongo.setUserName(user.getUserName());
         bookMarkMongo.setVersion(user.getVersion());
         mongoTemplate.save(bookMarkMongo,Constants.BOOK_MARK_MONGODB_NAME);
 

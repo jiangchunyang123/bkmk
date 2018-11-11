@@ -19,33 +19,36 @@ public class BookMkTreeBuilder {
      * @param bookmark 书签
      * @return 一条树路径节点列表
      */
-    public static JSONObject initDeepPath(int deep, String[] paths, BookMark bookmark) {
-        JSONObject parentObj = new JSONObject();
-        JSONObject rootNode = parentObj;
-        for (int i = deep; i < paths.length; i++) {
-            if (i == paths.length - 1) {
-                JSONArray arr = parentObj.getJSONArray("children");
-                JSONObject jsonObject1 = new JSONObject();
-                jsonObject1.put("title", bookmark.getTitle());
-                if (Strings.isNotBlank(bookmark.getUrl())) {
-                    jsonObject1.put("url", bookmark.getUrl());
-                } else {
-                    jsonObject1.put("children", new JSONArray());
-                }
-                arr.add(jsonObject1);
-            } else {
-                JSONObject jsonObject1 = new JSONObject();
-                jsonObject1.put("title", paths[i]);
-
-                jsonObject1.put("children", new JSONArray());
-                JSONArray arr = (JSONArray) parentObj.get("children");
-                arr.add(jsonObject1);
-                parentObj = jsonObject1;
-            }
+    public static void initDeepPath(int deep, String[] paths, BookMark bookmark, JSONArray parentObj) {
+        if (deep == paths.length - 1) {
+            JSONObject jsonObject1 = initLeaf(bookmark);
+            parentObj.add(jsonObject1);
+        } else {
+            JSONObject child = initPath(paths[deep]);
+            parentObj.add(child);
+            initDeepPath(deep+1,paths,bookmark,child.getJSONArray("children"));
         }
-        return rootNode;
     }
 
+
+    public static JSONObject initPath(String path) {
+        JSONObject child = new JSONObject();
+        child.put("title", path);
+        JSONArray childrens = new JSONArray();
+        child.put("children", childrens);
+        return child;
+    }
+
+    public static JSONObject initLeaf(BookMark bookmark) {
+        JSONObject leaf = new JSONObject();
+        leaf.put("title", bookmark.getTitle());
+        if (Strings.isNotBlank(bookmark.getUrl())) {
+            leaf.put("url", bookmark.getUrl());
+        } else {
+            leaf.put("children", new JSONArray());
+        }
+        return leaf;
+    }
 
     public static void travelAndAdd(BookMark bookmark, int deep, String[] paths, JSONArray parentObj) {
         if (deep > paths.length - 1) {
@@ -61,14 +64,14 @@ public class BookMkTreeBuilder {
                     travelAndAdd(bookmark, deep + 1, paths, arr);
                 } else {
                     JSONArray arr = new JSONArray();
-                    arr.add(BookMkTreeBuilder.initDeepPath(deep, paths, bookmark));
+                    initDeepPath(deep, paths, bookmark,arr);
                     child.put("children", arr);
                     travelAndAdd(bookmark, deep + 1, paths, arr);
                 }
             }
         }
         if (dontHaveBkmk) {
-            parentObj.add(BookMkTreeBuilder.initDeepPath(deep, paths, bookmark));
+            initDeepPath(deep, paths, bookmark,parentObj);
         }
     }
 
@@ -86,7 +89,7 @@ public class BookMkTreeBuilder {
                         child.get("title").toString() : child.get("url").toString());
                 travelAndTransform(arr, deep + 1, map, nextPath);
             }
-            BookMark book = jsonArray.toJavaObject(BookMark.class);
+            BookMark book = child.toJavaObject(BookMark.class);
             map.put(path, book);
         }
     }

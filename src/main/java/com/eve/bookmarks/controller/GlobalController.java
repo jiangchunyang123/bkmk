@@ -1,5 +1,6 @@
 package com.eve.bookmarks.controller;
 
+import com.eve.bookmarks.entitys.Result;
 import com.eve.bookmarks.entitys.po.User;
 import com.eve.bookmarks.manager.ISessionManager;
 import com.eve.bookmarks.service.UserService;
@@ -29,7 +30,7 @@ public class GlobalController {
 
     @PostMapping("/login")
     @ResponseBody
-    public String login(User user) {
-        return sessionManager.login(user);
+    public Result login(User user) {
+        return Result.Success(sessionManager.login(user));
     }
 }

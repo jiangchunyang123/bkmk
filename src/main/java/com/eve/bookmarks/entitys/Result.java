@@ -1,7 +1,7 @@
 package com.eve.bookmarks.entitys;
 
 public class Result {
-    private int state =1;
+    private int state =0;
     private String message;
     private Object data ;
 
@@ -11,7 +11,7 @@ public class Result {
         this.data = data;
     }
     static class Success {
-        private final static Result instance= new Result(1,"success");
+        private final static Result instance= new Result(0,"success");
     }
     public static Result Success(Object data){
         Result  result = Success.instance;

@@ -10,4 +10,6 @@ import java.util.List;
 public interface BkmkCommandMapper extends BaseMapper<BkmkCommand> {
     List<BkmkCommand> findCommands(@Param("state") int state, @Param("version") Long version);
 
+
+    int save(BkmkCommand bkmkCommand);
 }

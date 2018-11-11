@@ -7,16 +7,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class BookMarkMongo {
     @Id
     private String id;
-    private Long uid;
+    private String userName;
     private String value;
     private Long version;
 
-    public Long getUid() {
-        return uid;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUid(Long uid) {
-        this.uid = uid;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public Long getVersion() {
@@ -32,9 +32,9 @@ public class BookMarkMongo {
     public BookMarkMongo(String value) {
         this.value = value;
     }
-    public BookMarkMongo(String value,Long uid,Long version) {
+    public BookMarkMongo(String value,String userName,Long version) {
         this.value = value;
-        this.uid = uid;
+        this.userName = userName;
         this.version = version;
     }
     public BookMarkMongo(String id, String value) {
