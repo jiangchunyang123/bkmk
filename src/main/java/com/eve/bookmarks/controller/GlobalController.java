@@ -1,13 +1,11 @@
 package com.eve.bookmarks.controller;
 
-import com.eve.bookmarks.entitys.User;
+import com.eve.bookmarks.entitys.po.User;
 import com.eve.bookmarks.manager.ISessionManager;
 import com.eve.bookmarks.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -30,6 +28,7 @@ public class GlobalController {
     }
 
     @PostMapping("/login")
+    @ResponseBody
     public String login(User user) {
         return sessionManager.login(user);
     }

@@ -1,8 +1,8 @@
 package com.eve.bookmarks.entitys.vo;
 
-import com.eve.bookmarks.entitys.ScheduleRecord;
 
-import java.time.LocalDateTime;
+import com.eve.bookmarks.entitys.po.ScheduleRecord;
+
 import java.util.List;
 
 public class MailMsg {

@@ -1,8 +1,7 @@
 package com.eve.bookmarks.entitys;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.persistence.Id;
 
 @Document(collection = "bookmark")
 public class BookMarkMongo {

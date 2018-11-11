@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eve.bookmarks.dao.BookMarkMapper">
+  <resultMap id="BaseResultMap" type="com.eve.bookmarks.entitys.po.BookMark">
+    <id column="mysql_id" jdbcType="BIGINT" property="mysqlId" />
+    <result column="crate_time" jdbcType="TIMESTAMP" property="crateTime" />
+    <result column="date_added" jdbcType="VARCHAR" property="dateAdded" />
+    <result column="date_group_modified" jdbcType="VARCHAR" property="dateGroupModified" />
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="idx" jdbcType="VARCHAR" property="idx" />
+    <result column="mongo_id" jdbcType="VARCHAR" property="mongoId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="parent_mysql_id" jdbcType="BIGINT" property="parentMysqlId" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    mysql_id, crate_time, date_added, date_group_modified, id, idx, mongo_id, parent_id, 
+    parent_mysql_id, path, state, title, uid, update_time, url
+  </sql>
+  <select id="selectByExample" parameterType="com.eve.bookmarks.entitys.po.BookMarkExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from book_mark
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from book_mark
+    where mysql_id = #{mysqlId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from book_mark
+    where mysql_id = #{mysqlId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.eve.bookmarks.entitys.po.BookMarkExample">
+    delete from book_mark
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.eve.bookmarks.entitys.po.BookMark">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into book_mark (mysql_id, crate_time, date_added, 
+      date_group_modified, idx, mongo_id, 
+      parent_id, parent_mysql_id, path, 
+      state, title, uid, 
+      update_time, url)
+    values (#{mysqlId,jdbcType=BIGINT}, #{crateTime,jdbcType=TIMESTAMP}, #{dateAdded,jdbcType=VARCHAR}, 
+      #{dateGroupModified,jdbcType=VARCHAR}, #{idx,jdbcType=VARCHAR}, #{mongoId,jdbcType=VARCHAR}, 
+      #{parentId,jdbcType=VARCHAR}, #{parentMysqlId,jdbcType=BIGINT}, #{path,jdbcType=VARCHAR}, 
+      #{state,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{uid,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{url,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eve.bookmarks.entitys.po.BookMark">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into book_mark
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="mysqlId != null">
+        mysql_id,
+      </if>
+      <if test="crateTime != null">
+        crate_time,
+      </if>
+      <if test="dateAdded != null">
+        date_added,
+      </if>
+      <if test="dateGroupModified != null">
+        date_group_modified,
+      </if>
+      <if test="idx != null">
+        idx,
+      </if>
+      <if test="mongoId != null">
+        mongo_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="parentMysqlId != null">
+        parent_mysql_id,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="mysqlId != null">
+        #{mysqlId,jdbcType=BIGINT},
+      </if>
+      <if test="crateTime != null">
+        #{crateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dateAdded != null">
+        #{dateAdded,jdbcType=VARCHAR},
+      </if>
+      <if test="dateGroupModified != null">
+        #{dateGroupModified,jdbcType=VARCHAR},
+      </if>
+      <if test="idx != null">
+        #{idx,jdbcType=VARCHAR},
+      </if>
+      <if test="mongoId != null">
+        #{mongoId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentMysqlId != null">
+        #{parentMysqlId,jdbcType=BIGINT},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="uid != null">
+        #{uid,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.eve.bookmarks.entitys.po.BookMarkExample" resultType="java.lang.Long">
+    select count(*) from book_mark
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update book_mark
+    <set>
+      <if test="record.mysqlId != null">
+        mysql_id = #{record.mysqlId,jdbcType=BIGINT},
+      </if>
+      <if test="record.crateTime != null">
+        crate_time = #{record.crateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.dateAdded != null">
+        date_added = #{record.dateAdded,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dateGroupModified != null">
+        date_group_modified = #{record.dateGroupModified,jdbcType=VARCHAR},
+      </if>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.idx != null">
+        idx = #{record.idx,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mongoId != null">
+        mongo_id = #{record.mongoId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentId != null">
+        parent_id = #{record.parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentMysqlId != null">
+        parent_mysql_id = #{record.parentMysqlId,jdbcType=BIGINT},
+      </if>
+      <if test="record.path != null">
+        path = #{record.path,jdbcType=VARCHAR},
+      </if>
+      <if test="record.state != null">
+        state = #{record.state,jdbcType=INTEGER},
+      </if>
+      <if test="record.title != null">
+        title = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.uid != null">
+        uid = #{record.uid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.url != null">
+        url = #{record.url,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update book_mark
+    set mysql_id = #{record.mysqlId,jdbcType=BIGINT},
+      crate_time = #{record.crateTime,jdbcType=TIMESTAMP},
+      date_added = #{record.dateAdded,jdbcType=VARCHAR},
+      date_group_modified = #{record.dateGroupModified,jdbcType=VARCHAR},
+      id = #{record.id,jdbcType=VARCHAR},
+      idx = #{record.idx,jdbcType=VARCHAR},
+      mongo_id = #{record.mongoId,jdbcType=VARCHAR},
+      parent_id = #{record.parentId,jdbcType=VARCHAR},
+      parent_mysql_id = #{record.parentMysqlId,jdbcType=BIGINT},
+      path = #{record.path,jdbcType=VARCHAR},
+      state = #{record.state,jdbcType=INTEGER},
+      title = #{record.title,jdbcType=VARCHAR},
+      uid = #{record.uid,jdbcType=VARCHAR},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      url = #{record.url,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eve.bookmarks.entitys.po.BookMark">
+    update book_mark
+    <set>
+      <if test="crateTime != null">
+        crate_time = #{crateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dateAdded != null">
+        date_added = #{dateAdded,jdbcType=VARCHAR},
+      </if>
+      <if test="dateGroupModified != null">
+        date_group_modified = #{dateGroupModified,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null">
+        id = #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="idx != null">
+        idx = #{idx,jdbcType=VARCHAR},
+      </if>
+      <if test="mongoId != null">
+        mongo_id = #{mongoId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentMysqlId != null">
+        parent_mysql_id = #{parentMysqlId,jdbcType=BIGINT},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="uid != null">
+        uid = #{uid,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where mysql_id = #{mysqlId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eve.bookmarks.entitys.po.BookMark">
+    update book_mark
+    set crate_time = #{crateTime,jdbcType=TIMESTAMP},
+      date_added = #{dateAdded,jdbcType=VARCHAR},
+      date_group_modified = #{dateGroupModified,jdbcType=VARCHAR},
+      id = #{id,jdbcType=VARCHAR},
+      idx = #{idx,jdbcType=VARCHAR},
+      mongo_id = #{mongoId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      parent_mysql_id = #{parentMysqlId,jdbcType=BIGINT},
+      path = #{path,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      uid = #{uid,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      url = #{url,jdbcType=VARCHAR}
+    where mysql_id = #{mysqlId,jdbcType=BIGINT}
+  </update>
+</mapper>

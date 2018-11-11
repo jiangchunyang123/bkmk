@@ -1,6 +1,6 @@
 package com.eve.bookmarks.task;
 
-import com.eve.bookmarks.entitys.ScheduleRecord;
+import com.eve.bookmarks.entitys.po.ScheduleRecord;
 import com.eve.bookmarks.entitys.vo.MailMsg;
 import com.eve.bookmarks.service.ScheduleService;
 import org.slf4j.Logger;
@@ -10,10 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @EnableScheduling
@@ -34,7 +33,7 @@ public class ScheduleTaskConfig {
     @Autowired
     ScheduleService scheduleService;
 
-    @Scheduled(cron = "0 0/10 * * * ?")
+//    @Scheduled(cron = "0 0/10 * * * ?")
     public void doTask() {
         logger.info("begin execute task ...");
         senMail();
@@ -60,7 +59,7 @@ public class ScheduleTaskConfig {
 
         for (int i = 0; i < list.size(); i++) {
             ScheduleRecord scheduleRecord = list.get(i);
-            stringBuilder.append((i+1) + ". " + scheduleRecord.getSchedule().getTitle()+"\n");
+            stringBuilder.append((i+1) + ". " + scheduleRecord.getTitle()+"\n");
         }
         return stringBuilder.toString();
     }

@@ -1,9 +1,8 @@
 package com.eve.bookmarks.controller;
 
 import com.eve.bookmarks.entitys.Result;
-import com.eve.bookmarks.entitys.Schedule;
-import com.eve.bookmarks.entitys.ScheduleRecord;
-import com.eve.bookmarks.entitys.User;
+import com.eve.bookmarks.entitys.po.Schedule;
+import com.eve.bookmarks.entitys.po.ScheduleRecord;
 import com.eve.bookmarks.entitys.vo.QueryParam;
 import com.eve.bookmarks.entitys.vo.ScheduleVo;
 import com.eve.bookmarks.service.ScheduleService;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController

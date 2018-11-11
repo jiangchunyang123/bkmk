@@ -1,11 +1,10 @@
 package com.eve.bookmarks.controller;
 
 import com.eve.bookmarks.entitys.Result;
-import com.eve.bookmarks.entitys.User;
+import com.eve.bookmarks.entitys.po.User;
 import com.eve.bookmarks.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

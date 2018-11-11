@@ -1,8 +1,8 @@
 package com.eve.bookmarks;
 
 import com.alibaba.fastjson.JSONObject;
-import com.eve.bookmarks.entitys.Schedule;
-import com.eve.bookmarks.entitys.User;
+import com.eve.bookmarks.entitys.po.Schedule;
+import com.eve.bookmarks.entitys.po.User;
 import com.eve.bookmarks.service.ScheduleService;
 import com.eve.bookmarks.service.UserService;
 import com.eve.bookmarks.task.ScheduleTaskConfig;
@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
 
 @RunWith(SpringRunner.class)
@@ -68,7 +67,7 @@ public class BookmarksApplicationTests {
         Schedule nearEndsMail = Schedule.newDefault();
         nearEndsMail.setTitle("test mail send");
         nearEndsMail.setFirstDeadLine(LocalDateTime.now().plusMinutes(5));
-        nearEndsMail.setUser(userService.get(1l));
+        nearEndsMail.setUserName("god");
 
         scheduleService.insert(nearEndsMail);
 
@@ -77,7 +76,7 @@ public class BookmarksApplicationTests {
         Schedule overTimeMail = new Schedule();
         overTimeMail.setTitle("test mail send overtime");
         overTimeMail.setFirstDeadLine(LocalDateTime.now().plusMinutes(-5));
-        overTimeMail.setUser(userService.get(1l));
+        nearEndsMail.setUserName("god");
         scheduleService.insert(overTimeMail);
         scheduleService.appendRecord(overTimeMail);
 

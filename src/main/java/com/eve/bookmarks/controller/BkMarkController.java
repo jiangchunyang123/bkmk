@@ -3,7 +3,7 @@ package com.eve.bookmarks.controller;
 import com.alibaba.fastjson.JSON;
 import com.eve.bookmarks.entitys.BookMarkMongo;
 import com.eve.bookmarks.entitys.Result;
-import com.eve.bookmarks.entitys.User;
+import com.eve.bookmarks.entitys.po.User;
 import com.eve.bookmarks.manager.ISessionManager;
 import com.eve.bookmarks.service.BookMarkService;
 import com.eve.bookmarks.service.UserService;
@@ -57,9 +57,12 @@ public class BkMarkController {
      * @return 调整命令
      */
     @PostMapping(value = "/{sessionId}")
-    public Result synBookMarks(@PathVariable(value="userId") String sessionId, @RequestBody BookMarkMongo bookmarks) {
+    public Result synBookMarks(@PathVariable(value="sessionId") String sessionId, @RequestBody BookMarkMongo bookmarks) {
         User user = sessionManager.getUser(sessionId);
-        Map<String, Object> map = bookMarkService.syncBookMark(bookmarks.getValue(), user);
+        if(user==null){
+            throw new RuntimeException("not login yet!");
+        }
+        Map<String, Object> map = bookMarkService.syncBookMark(bookmarks.getValue(),bookmarks.getVersion(), user);
         logger.debug("results:", JSON.toJSONString(map));
         return new Result(Constants.STATUS_SUCCESS, map);
     }

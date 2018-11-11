@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eve.bookmarks.dao.ScheduleMapper">
+  <resultMap id="BaseResultMap" type="com.eve.bookmarks.entitys.po.Schedule">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="first_dead_line" jdbcType="TIMESTAMP" property="firstDeadLine" />
+    <result column="is_circle" jdbcType="BIT" property="isCircle" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="schedule_num" jdbcType="INTEGER" property="scheduleNum" />
+    <result column="schedule_type" jdbcType="INTEGER" property="scheduleType" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, create_time, first_dead_line, is_circle, level, remark, schedule_num, schedule_type, 
+    title, user_name
+  </sql>
+  <select id="selectByExample" parameterType="com.eve.bookmarks.entitys.po.ScheduleExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from schedule
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from schedule
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from schedule
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.eve.bookmarks.entitys.po.ScheduleExample">
+    delete from schedule
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.eve.bookmarks.entitys.po.Schedule">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into schedule (create_time, first_dead_line, is_circle, 
+      level, remark, schedule_num, 
+      schedule_type, title, user_name
+      )
+    values (#{createTime,jdbcType=TIMESTAMP}, #{firstDeadLine,jdbcType=TIMESTAMP}, #{isCircle,jdbcType=BIT}, 
+      #{level,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{scheduleNum,jdbcType=INTEGER}, 
+      #{scheduleType,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eve.bookmarks.entitys.po.Schedule">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into schedule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="firstDeadLine != null">
+        first_dead_line,
+      </if>
+      <if test="isCircle != null">
+        is_circle,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="scheduleNum != null">
+        schedule_num,
+      </if>
+      <if test="scheduleType != null">
+        schedule_type,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="firstDeadLine != null">
+        #{firstDeadLine,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isCircle != null">
+        #{isCircle,jdbcType=BIT},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="scheduleNum != null">
+        #{scheduleNum,jdbcType=INTEGER},
+      </if>
+      <if test="scheduleType != null">
+        #{scheduleType,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.eve.bookmarks.entitys.po.ScheduleExample" resultType="java.lang.Long">
+    select count(*) from schedule
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update schedule
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.firstDeadLine != null">
+        first_dead_line = #{record.firstDeadLine,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isCircle != null">
+        is_circle = #{record.isCircle,jdbcType=BIT},
+      </if>
+      <if test="record.level != null">
+        level = #{record.level,jdbcType=INTEGER},
+      </if>
+      <if test="record.remark != null">
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.scheduleNum != null">
+        schedule_num = #{record.scheduleNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.scheduleType != null">
+        schedule_type = #{record.scheduleType,jdbcType=INTEGER},
+      </if>
+      <if test="record.title != null">
+        title = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userName != null">
+        user_name = #{record.userName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update schedule
+    set id = #{record.id,jdbcType=BIGINT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      first_dead_line = #{record.firstDeadLine,jdbcType=TIMESTAMP},
+      is_circle = #{record.isCircle,jdbcType=BIT},
+      level = #{record.level,jdbcType=INTEGER},
+      remark = #{record.remark,jdbcType=VARCHAR},
+      schedule_num = #{record.scheduleNum,jdbcType=INTEGER},
+      schedule_type = #{record.scheduleType,jdbcType=INTEGER},
+      title = #{record.title,jdbcType=VARCHAR},
+      user_name = #{record.userName,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eve.bookmarks.entitys.po.Schedule">
+    update schedule
+    <set>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="firstDeadLine != null">
+        first_dead_line = #{firstDeadLine,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isCircle != null">
+        is_circle = #{isCircle,jdbcType=BIT},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="scheduleNum != null">
+        schedule_num = #{scheduleNum,jdbcType=INTEGER},
+      </if>
+      <if test="scheduleType != null">
+        schedule_type = #{scheduleType,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eve.bookmarks.entitys.po.Schedule">
+    update schedule
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      first_dead_line = #{firstDeadLine,jdbcType=TIMESTAMP},
+      is_circle = #{isCircle,jdbcType=BIT},
+      level = #{level,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      schedule_num = #{scheduleNum,jdbcType=INTEGER},
+      schedule_type = #{scheduleType,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -2,7 +2,7 @@ package com.eve.bookmarks.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.eve.bookmarks.entitys.BookMark;
+import com.eve.bookmarks.entitys.po.BookMark;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.Map;
@@ -19,12 +19,12 @@ public class BookMkTreeBuilder {
      * @param bookmark 书签
      * @return 一条树路径节点列表
      */
-    public static  JSONObject initDeepPath(int deep, String[] paths, BookMark bookmark) {
+    public static JSONObject initDeepPath(int deep, String[] paths, BookMark bookmark) {
         JSONObject parentObj = new JSONObject();
         JSONObject rootNode = parentObj;
         for (int i = deep; i < paths.length; i++) {
             if (i == paths.length - 1) {
-                JSONArray arr = (JSONArray) parentObj.get("children");
+                JSONArray arr = parentObj.getJSONArray("children");
                 JSONObject jsonObject1 = new JSONObject();
                 jsonObject1.put("title", bookmark.getTitle());
                 if (Strings.isNotBlank(bookmark.getUrl())) {
@@ -47,49 +47,48 @@ public class BookMkTreeBuilder {
     }
 
 
-    public static void travelAndAdd(BookMark bookmark, int deep, String[] paths, JSONObject parentObj) {
+    public static void travelAndAdd(BookMark bookmark, int deep, String[] paths, JSONArray parentObj) {
         if (deep > paths.length - 1) {
             return;
         }
-
-        if (parentObj.containsKey("children")) {
-            JSONArray arr = (JSONArray) parentObj.get("children");
-            boolean isHavePath = false;
-            for (Object anArr : arr) {
-                JSONObject child = (JSONObject) anArr;
-                if (paths[deep].equals(child.get("title")) || paths[deep].equals(child.get("url"))) {
-                    isHavePath = true;
-                    travelAndAdd(bookmark, deep + 1, paths, parentObj);
-                    break;
+        boolean dontHaveBkmk = true;
+        for (int i = 0; i < parentObj.size(); i++) {
+            JSONObject child = parentObj.getJSONObject(i);
+            if (paths[deep].equals(child.get("title")) || paths[deep].equals(child.get("url"))) {
+                dontHaveBkmk = false;
+                if (child.containsKey("children")) {
+                    JSONArray arr = child.getJSONArray("children");
+                    travelAndAdd(bookmark, deep + 1, paths, arr);
+                } else {
+                    JSONArray arr = new JSONArray();
+                    arr.add(BookMkTreeBuilder.initDeepPath(deep, paths, bookmark));
+                    child.put("children", arr);
+                    travelAndAdd(bookmark, deep + 1, paths, arr);
                 }
             }
-            if (!isHavePath) {
-                arr.add(BookMkTreeBuilder.initDeepPath(deep, paths, bookmark));
-            }
-        } else {
-            JSONArray arr = new JSONArray();
-            arr.add(BookMkTreeBuilder.initDeepPath(deep, paths, bookmark));
-            parentObj.put("children", arr);
         }
-
+        if (dontHaveBkmk) {
+            parentObj.add(BookMkTreeBuilder.initDeepPath(deep, paths, bookmark));
+        }
     }
 
     /**
      * 遍历树，并将节点存储到map中去
      *
-     * @param jsonObject 节点树
+     * @param jsonArray 节点树
      */
-    public static void travelAndTransform(JSONObject jsonObject, int deep, Map<String, BookMark> map, String path) {
-        if (jsonObject.containsKey("children")) {
-            JSONArray arr = (JSONArray) jsonObject.get("children");
-            for (Object anArr : arr) {
-                JSONObject child = (JSONObject) anArr;
-                String nextPath = path + "_" + (child.get("url") == null ? child.get("title").toString() : child.get("url").toString());
-                travelAndTransform(child, deep + 1, map, nextPath);
+    public static void travelAndTransform(JSONArray jsonArray, int deep, Map<String, BookMark> map, String path) {
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject child = jsonArray.getJSONObject(i);
+            if (child.containsKey("children")) {
+                JSONArray arr = child.getJSONArray("children");
+                String nextPath = path + "_" + (child.get("url") == null ?
+                        child.get("title").toString() : child.get("url").toString());
+                travelAndTransform(arr, deep + 1, map, nextPath);
             }
+            BookMark book = jsonArray.toJavaObject(BookMark.class);
+            map.put(path, book);
         }
-        BookMark book = jsonObject.toJavaObject(BookMark.class);
-        map.put(path, book);
     }
 
     /**
@@ -97,17 +96,17 @@ public class BookMkTreeBuilder {
      *
      * @param parentObj 父级节点
      */
-    public static void travelAndDel(int deep, JSONObject parentObj, String targetKey, String parentPath) {
-        if (parentObj.containsKey("children")) {
-            JSONArray arr = (JSONArray) parentObj.get("children");
-            for (int i = 0; i < arr.size(); i++) {
-                JSONObject child = (JSONObject) arr.get(i);
-                String nextPath = parentPath + "_" + (child.get("url") == null ? child.get("title").toString() : child.get("url").toString());
-                if (nextPath.equals(targetKey)) {
-                    arr.remove(child);
-                    return;
-                }
-                travelAndDel(deep + 1, child, targetKey, nextPath);
+    public static void travelAndDel(int deep, JSONArray parentObj, String targetKey, String parentPath) {
+        for (int i = 0; i < parentObj.size(); i++) {
+            JSONObject jsonObject = parentObj.getJSONObject(i);
+            String nextPath = parentPath + "_" + (jsonObject.get("url") == null ?
+                    jsonObject.get("title").toString() : jsonObject.get("url").toString());
+            if (nextPath.equals(targetKey)) {
+                parentObj.remove(i);
+                return;
+            }
+            if (jsonObject.containsKey("children")) {
+                travelAndDel(deep + 1, jsonObject.getJSONArray("children"), targetKey, nextPath);
             }
         }
     }

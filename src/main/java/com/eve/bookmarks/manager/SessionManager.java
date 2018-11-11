@@ -1,9 +1,7 @@
 package com.eve.bookmarks.manager;
 
-import com.alibaba.fastjson.JSON;
-import com.eve.bookmarks.entitys.User;
+import com.eve.bookmarks.entitys.po.User;
 import com.eve.bookmarks.service.UserService;
-import com.eve.bookmarks.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;

@@ -1,14 +1,15 @@
 package com.eve.bookmarks.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.eve.bookmarks.dao.BkmkCommandRepository;
-import com.eve.bookmarks.dao.BookMarkRepository;
-import com.eve.bookmarks.dao.UserRepository;
-import com.eve.bookmarks.entitys.BkmkCommand;
-import com.eve.bookmarks.entitys.BookMark;
+import com.eve.bookmarks.dao.BkmkCommandMapper;
+import com.eve.bookmarks.dao.BookMarkMapper;
+import com.eve.bookmarks.dao.UserMapper;
 import com.eve.bookmarks.entitys.BookMarkMongo;
-import com.eve.bookmarks.entitys.User;
+import com.eve.bookmarks.entitys.po.BkmkCommand;
+import com.eve.bookmarks.entitys.po.BookMark;
+import com.eve.bookmarks.entitys.po.User;
 import com.eve.bookmarks.service.BookMarkService;
 import com.eve.bookmarks.utils.BookMkTreeBuilder;
 import com.eve.bookmarks.utils.Constants;
@@ -17,8 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,26 +34,26 @@ public class BookMarkServiceImpl implements BookMarkService {
 
     private Logger logger = LoggerFactory.getLogger(BookMarkService.class);
 
-    private final BookMarkRepository bookMarkRepository;
+    private final BookMarkMapper bookMarkMapper;
 
-    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     private final MongoTemplate mongoTemplate;
 
-    private final BkmkCommandRepository bkmkCommandRepository;
+    private final BkmkCommandMapper bkmkCommandMapper;
 
     @Autowired
-    public BookMarkServiceImpl(BookMarkRepository bookMarkRepository, UserRepository userRepository,
-                               MongoTemplate mongoTemplate, BkmkCommandRepository bkmkCommandRepository) {
-        this.bookMarkRepository = bookMarkRepository;
-        this.userRepository = userRepository;
+    public BookMarkServiceImpl(BookMarkMapper bookMarkMapper, UserMapper userMapper,
+                               MongoTemplate mongoTemplate, BkmkCommandMapper bkmkCommandMapper) {
+        this.bookMarkMapper = bookMarkMapper;
+        this.userMapper = userMapper;
         this.mongoTemplate = mongoTemplate;
-        this.bkmkCommandRepository = bkmkCommandRepository;
+        this.bkmkCommandMapper = bkmkCommandMapper;
     }
 
     @Override
     public BookMark get(Long mysqlId) {
-        return bookMarkRepository.findById(mysqlId).get();
+       return  bookMarkMapper.selectByPrimaryKey(mysqlId);
     }
 
     @Override
@@ -66,25 +67,24 @@ public class BookMarkServiceImpl implements BookMarkService {
      * @description 保存书签，每次保存都是新版本
      */
     @Override
-    public void saveBookMarks(Object node, User user) {
+    public void saveBookMarks(JSONArray node, User user) {
         BookMarkMongo bookMarkMongo = new BookMarkMongo(node.toString(), user.getId(),user.getVersion());
         mongoTemplate.save(bookMarkMongo, Constants.BOOK_MARK_MONGODB_NAME);
         //更新user中的mongoid
         user.setMongoId(bookMarkMongo.getId());
-        userRepository.save(user);
+        userMapper.insert(user);
     }
 
     @Override
-    public Map<String, Object> syncBookMark(String bookmarks, User user) {
+    public Map<String, Object> syncBookMark(String bookmarks, Long localVersion, User user) {
         //初始化解析数据
-        JSONObject jsonObject = JSONObject.parseObject(bookmarks);
-        Long localVersion = Long.valueOf(jsonObject.get("version").toString());
-        JSONObject localBkMarks = (JSONObject) jsonObject.get("data");
+        JSONArray localBkMarks = JSONObject.parseArray(bookmarks);
 
         Map<String, Object> result = new HashMap<>();
 
         // 要删除，增加的节点
-        List<BkmkCommand> deletes = new ArrayList<>(), adds = new ArrayList<>();
+        List<BkmkCommand> deletes = new ArrayList<>();
+        List<BkmkCommand> adds = new ArrayList<>();
 
         //本地的书签
         Map<String, BookMark> localMap = new HashMap<>();
@@ -93,14 +93,14 @@ public class BookMarkServiceImpl implements BookMarkService {
         //数据库中存储的书签
         Map<String, BookMark> dbMap = new HashMap<>();
         BookMarkMongo bookMarkDB = mongoTemplate.findById(user.getMongoId(), BookMarkMongo.class);
-        JSONObject bkmkJsonDb = JSON.parseObject(bookMarkDB.getValue());
+        JSONArray bkmkJsonDb = JSON.parseArray(bookMarkDB.getValue());
         Long dbVersion = Long.valueOf(bookMarkDB.getVersion());
 
         BookMkTreeBuilder.travelAndTransform(bkmkJsonDb, 0, dbMap, null);
 
         //首先执行从本地version开始所有命令,0 代表初次导入，不执行命令，直接合并，不做任何删除操作
         if (localVersion != 0) {
-            List<BkmkCommand> commandList = bkmkCommandRepository.findCommands(Constants.STATE_ENABLE, localVersion);
+            List<BkmkCommand> commandList = bkmkCommandMapper.findCommands(Constants.STATE_ENABLE, localVersion);
             executeCommand(localMap, commandList, deletes, adds);
         }
 
@@ -135,7 +135,7 @@ public class BookMarkServiceImpl implements BookMarkService {
      *
      * @param bkmkJsonDb 数据库中的书签树
      */
-    private void updateBkMark(JSONObject bkmkJsonDb, User user) {
+    private void updateBkMark(JSONArray bkmkJsonDb, User user) {
         user.setVersion(user.getVersion() + 1);
         saveBookMarks(bkmkJsonDb, user);
     }
@@ -149,7 +149,7 @@ public class BookMarkServiceImpl implements BookMarkService {
      */
     private void createDelCommand(String path, BookMark bookmark, Long localVersion, Long dbVersion) {
         BkmkCommand bkmkCommand = BkmkCommand.buildCommand(path, bookmark, localVersion, dbVersion, -1);
-        bkmkCommandRepository.save(bkmkCommand);
+        bkmkCommandMapper.insert(bkmkCommand);
     }
 
     /**
@@ -157,7 +157,7 @@ public class BookMarkServiceImpl implements BookMarkService {
      *
      * @param bkmkJsonDb 数据库中的书签树
      */
-    private void delBookMark(String path, JSONObject bkmkJsonDb) {
+    private void delBookMark(String path, JSONArray bkmkJsonDb) {
         BookMkTreeBuilder.travelAndDel(0, bkmkJsonDb, path, "");
     }
 
@@ -167,7 +167,7 @@ public class BookMarkServiceImpl implements BookMarkService {
      *
      * @param bookmark 书签
      */
-    private void addBookMark(BookMark bookmark, String path, JSONObject parentNode) {
+    private void addBookMark(BookMark bookmark, String path, JSONArray parentNode) {
         String[] paths = path.split("_");
         BookMkTreeBuilder.travelAndAdd(bookmark, 0, paths, parentNode);
     }
@@ -179,7 +179,7 @@ public class BookMarkServiceImpl implements BookMarkService {
      */
     private void createAddCommand(String path, BookMark bookmark, Long localVersion, Long dbVersion) {
         BkmkCommand bkmkCommand = BkmkCommand.buildCommand(path, bookmark, localVersion, dbVersion, 1);
-        bkmkCommandRepository.save(bkmkCommand);
+        bkmkCommandMapper.insert(bkmkCommand);
     }
 
     /**

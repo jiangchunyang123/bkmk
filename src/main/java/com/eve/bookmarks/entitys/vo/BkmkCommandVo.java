@@ -1,9 +1,6 @@
 package com.eve.bookmarks.entitys.vo;
 
-import com.eve.bookmarks.entitys.BookMark;
-
-import javax.persistence.Entity;
-import java.time.LocalDateTime;
+import com.eve.bookmarks.entitys.po.BookMark;
 
 /**
  * 命令

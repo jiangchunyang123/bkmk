@@ -1,5 +1,7 @@
 package com.eve.bookmarks.entitys;
 
+import com.eve.bookmarks.entitys.po.User;
+
 public class VersionRelateAddr {
     private Long id;
     private String addr;

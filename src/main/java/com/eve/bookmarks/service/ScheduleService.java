@@ -1,7 +1,7 @@
 package com.eve.bookmarks.service;
 
-import com.eve.bookmarks.entitys.Schedule;
-import com.eve.bookmarks.entitys.ScheduleRecord;
+import com.eve.bookmarks.entitys.po.Schedule;
+import com.eve.bookmarks.entitys.po.ScheduleRecord;
 import com.eve.bookmarks.entitys.vo.MailMsg;
 import com.eve.bookmarks.entitys.vo.QueryParam;
 import com.eve.bookmarks.entitys.vo.ScheduleVo;
