@@ -6,12 +6,42 @@
     <script src="js/bookList.js"></script>
 </head>
 <body>
-<div class="container">
-    <div class="row">
+<div class="row">
+    <div class="col-1"></div>
+    <div class="col-3">
+        <form method="post">
+            <div class="form-group">
+                <label for="book_code">条形码</label>
+                <input class="form-control" id="book_code"
+                       placeholder="输入条码">
+            </div>
+            <div class="form-group">
+                <label for="book_name">书名</label>
+                <input class="form-control" id="book_name" placeholder="书名">
+            </div>
+            <div class="form-group">
+                <label for="book_pageNumber">页数</label>
+                <input class="form-control" id="book_pageNumber" placeholder="页数">
+            </div>
+            <div class="form-group">
+                <label for="book_author">作者</label>
+                <input class="form-control" id="book_author" placeholder="作者">
+            </div>
+            <div class="form-group">
+                <label for="book_publisher">出版社:</label>
+                <select class="form-control" id="book_publisher">
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">提交</button>
+        </form>
+    </div>
+    <div class="col-6">
         <table id="bookList">
-
         </table>
     </div>
+    <div class="col-2"></div>
+
 </div>
+
 </body>
 </html>

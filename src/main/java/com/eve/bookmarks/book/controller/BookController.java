@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/books")
 public class BookController {
+
     private final IBookService bookService;
 
 
@@ -17,7 +18,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @PutMapping
+    @PostMapping
     public Result saveOrUpdate(@RequestBody Book book) {
         bookService.saveOrUpdate(book);
         return Result.Success();

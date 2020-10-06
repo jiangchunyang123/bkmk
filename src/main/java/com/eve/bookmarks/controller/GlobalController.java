@@ -34,6 +34,8 @@ public class GlobalController {
 //    public String bookList() {
 //        return "bookList";
 //    }
+
+
     @PostMapping("/login")
     @ResponseBody
     public Result login(User user) {
