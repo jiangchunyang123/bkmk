@@ -6,7 +6,9 @@ import com.eve.bookmarks.manager.ISessionManager;
 import com.eve.bookmarks.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
@@ -28,6 +30,10 @@ public class GlobalController {
         return "index";
     }
 
+    //    @RequestMapping("/bookList")
+//    public String bookList() {
+//        return "bookList";
+//    }
     @PostMapping("/login")
     @ResponseBody
     public Result login(User user) {

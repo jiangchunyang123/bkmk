@@ -76,7 +76,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public List<ScheduleRecord> queryRecordList(QueryParam record) {
-        return scheduleRecordMapper.querySchRecordList(record.getStartTime(), record.getEndTime(), record.getUserId());
+        return scheduleRecordMapper.querySchRecordList(record.getStartTime(), record.getEndTime(),
+                record.getUserId());
     }
 
 
