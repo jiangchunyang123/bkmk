@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eve.bookmarks.book.dao.BookMapper">
+    <resultMap id="BaseResultMap" type="com.eve.bookmarks.book.domain.Book">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="price" jdbcType="REAL" property="price"/>
+        <result column="author" jdbcType="VARCHAR" property="author"/>
+        <result column="publisher" jdbcType="VARCHAR" property="publisher"/>
+        <result column="page_number" jdbcType="INTEGER" property="pageNumber"/>
+        <result column="type" jdbcType="TINYINT" property="type"/>
+        <result column="process" jdbcType="INTEGER" property="process"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, `name`, price, author, publisher, page_number, `type`, `process`, remark, create_time, 
+    create_user
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from book
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from book
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.eve.bookmarks.book.domain.Book">
+    insert into book (id, `name`, price, 
+      author, publisher, page_number, 
+      `type`, `process`, remark, 
+      create_time, create_user)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{price,jdbcType=REAL}, 
+      #{author,jdbcType=VARCHAR}, #{publisher,jdbcType=VARCHAR}, #{pageNumber,jdbcType=INTEGER}, 
+      #{type,jdbcType=TINYINT}, #{process,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR})
+  </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.eve.bookmarks.book.domain.Book">
+        update book
+        <set>
+            <if test="name != null">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=REAL},
+            </if>
+            <if test="author != null">
+                author = #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="publisher != null">
+                publisher = #{publisher,jdbcType=VARCHAR},
+            </if>
+            <if test="pageNumber != null">
+                page_number = #{pageNumber,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                `type` = #{type,jdbcType=TINYINT},
+            </if>
+            <if test="process != null">
+                `process` = #{process,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+</mapper>
