@@ -1,11 +1,11 @@
 package com.eve.bookmarks;
 
 import com.alibaba.fastjson.JSONObject;
-import com.eve.bookmarks.entitys.po.Schedule;
-import com.eve.bookmarks.entitys.po.User;
-import com.eve.bookmarks.service.ScheduleService;
-import com.eve.bookmarks.service.UserService;
-import com.eve.bookmarks.task.ScheduleTaskConfig;
+import com.eve.bookmarks.common.task.ScheduleTaskConfig;
+import com.eve.bookmarks.schedule.domain.po.Schedule;
+import com.eve.bookmarks.schedule.service.ScheduleService;
+import com.eve.bookmarks.sys.domain.User;
+import com.eve.bookmarks.sys.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

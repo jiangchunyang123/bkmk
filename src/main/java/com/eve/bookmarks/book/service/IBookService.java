@@ -1,8 +1,7 @@
 package com.eve.bookmarks.book.service;
 
-import com.eve.bookmarks.book.domain.Book;
-
-import java.util.List;
+import com.eve.bookmarks.book.domain.po.Book;
+import org.springframework.data.domain.Page;
 
 public interface IBookService {
 
@@ -10,5 +9,5 @@ public interface IBookService {
 
     void delete(Integer id);
 
-    List<Book> search(String name);
+    Page<Book> search(String name, Integer pageSize, Integer PageNum);
 }

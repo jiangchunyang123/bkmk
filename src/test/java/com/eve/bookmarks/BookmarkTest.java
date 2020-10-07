@@ -1,9 +1,9 @@
 package com.eve.bookmarks;
 
 import com.alibaba.fastjson.JSON;
-import com.eve.bookmarks.dao.UserMapper;
-import com.eve.bookmarks.entitys.po.User;
-import com.eve.bookmarks.service.BookMarkService;
+import com.eve.bookmarks.bookmark.service.BookMarkService;
+import com.eve.bookmarks.sys.dao.UserMapper;
+import com.eve.bookmarks.sys.domain.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

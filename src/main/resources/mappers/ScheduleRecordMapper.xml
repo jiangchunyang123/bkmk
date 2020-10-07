@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.eve.bookmarks.dao.ScheduleRecordMapper">
-  <resultMap id="BaseResultMap" type="com.eve.bookmarks.entitys.po.ScheduleRecord">
+<mapper namespace="com.eve.bookmarks.schedule.dao.ScheduleRecordMapper">
+  <resultMap id="BaseResultMap" type="com.eve.bookmarks.schedule.domain.po.ScheduleRecord">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="dead_line" jdbcType="TIMESTAMP" property="deadLine" />
@@ -17,7 +17,7 @@
     id, create_time, dead_line, state, update_time, schedule_id, user_id, remark
   </sql>
 
-  <insert id="insert" parameterType="com.eve.bookmarks.entitys.po.ScheduleRecord">
+  <insert id="insert" parameterType="com.eve.bookmarks.schedule.domain.po.ScheduleRecord">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>

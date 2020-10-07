@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.eve.bookmarks.dao.BkmkCommandMapper">
-  <resultMap id="BaseResultMap" type="com.eve.bookmarks.entitys.po.BkmkCommand">
+<mapper namespace="com.eve.bookmarks.bookmark.dao.BkmkCommandMapper">
+  <resultMap id="BaseResultMap" type="com.eve.bookmarks.bookmark.domain.BkmkCommand">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="command" jdbcType="INTEGER" property="command" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -73,7 +73,8 @@
   <sql id="Base_Column_List">
     id, command, create_time, end_version, path, start_version, state, update_time, book_mark_mysql_id
   </sql>
-  <select id="selectByExample" parameterType="com.eve.bookmarks.entitys.po.BkmkCommandExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.eve.bookmarks.bookmark.domain.BkmkCommandExample"
+          resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -105,13 +106,14 @@
     delete from bkmk_command
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.eve.bookmarks.entitys.po.BkmkCommandExample">
+  <delete id="deleteByExample" parameterType="com.eve.bookmarks.bookmark.domain.BkmkCommandExample">
     delete from bkmk_command
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="save" parameterType="com.eve.bookmarks.entitys.po.BkmkCommand" useGeneratedKeys="true"  keyProperty="id">
+  <insert id="save" parameterType="com.eve.bookmarks.bookmark.domain.BkmkCommand" useGeneratedKeys="true"
+          keyProperty="id">
     insert into bkmk_command (command, create_time, end_version, 
       path, start_version, state, 
       update_time, book_mark_mysql_id)
@@ -119,7 +121,7 @@
       #{path,jdbcType=VARCHAR}, #{startVersion,jdbcType=BIGINT}, #{state,jdbcType=INTEGER}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{bookMarkMysqlId,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.eve.bookmarks.entitys.po.BkmkCommand">
+  <insert id="insertSelective" parameterType="com.eve.bookmarks.bookmark.domain.BkmkCommand">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -177,7 +179,8 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.eve.bookmarks.entitys.po.BkmkCommandExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.eve.bookmarks.bookmark.domain.BkmkCommandExample"
+          resultType="java.lang.Long">
     select count(*) from bkmk_command
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -233,7 +236,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.eve.bookmarks.entitys.po.BkmkCommand">
+  <update id="updateByPrimaryKeySelective" parameterType="com.eve.bookmarks.bookmark.domain.BkmkCommand">
     update bkmk_command
     <set>
       <if test="command != null">
@@ -263,7 +266,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.eve.bookmarks.entitys.po.BkmkCommand">
+  <update id="updateByPrimaryKey" parameterType="com.eve.bookmarks.bookmark.domain.BkmkCommand">
     update bkmk_command
     set command = #{command,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},

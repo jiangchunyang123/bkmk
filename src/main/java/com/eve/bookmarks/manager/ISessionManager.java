@@ -1,6 +1,6 @@
 package com.eve.bookmarks.manager;
 
-import com.eve.bookmarks.entitys.po.User;
+import com.eve.bookmarks.sys.domain.User;
 
 public interface ISessionManager {
     String login(User user);

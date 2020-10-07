@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.eve.bookmarks.dao.UserMapper">
-  <resultMap id="BaseResultMap" type="com.eve.bookmarks.entitys.po.User">
+<mapper namespace="com.eve.bookmarks.sys.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="com.eve.bookmarks.sys.domain.User">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="email" jdbcType="VARCHAR" property="email" />
@@ -75,7 +75,7 @@
     id, create_time, email, mongo_id, password, phone, state, update_time, user_name, 
     version
   </sql>
-  <select id="selectByExample" parameterType="com.eve.bookmarks.entitys.po.UserExample" resultMap="BaseResultMap">
+    <select id="selectByExample" parameterType="com.eve.bookmarks.sys.domain.UserExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -107,13 +107,13 @@
     delete from user
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.eve.bookmarks.entitys.po.UserExample">
+    <delete id="deleteByExample" parameterType="com.eve.bookmarks.sys.domain.UserExample">
     delete from user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.eve.bookmarks.entitys.po.User">
+    <insert id="insert" parameterType="com.eve.bookmarks.sys.domain.User">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -126,7 +126,7 @@
       #{updateTime,jdbcType=TIMESTAMP}, #{userName,jdbcType=VARCHAR}, #{version,jdbcType=BIGINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.eve.bookmarks.entitys.po.User">
+    <insert id="insertSelective" parameterType="com.eve.bookmarks.sys.domain.User">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -190,7 +190,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.eve.bookmarks.entitys.po.UserExample" resultType="java.lang.Long">
+    <select id="countByExample" parameterType="com.eve.bookmarks.sys.domain.UserExample" resultType="java.lang.Long">
     select count(*) from user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -250,7 +250,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.eve.bookmarks.entitys.po.User">
+    <update id="updateByPrimaryKeySelective" parameterType="com.eve.bookmarks.sys.domain.User">
     update user
     <set>
       <if test="createTime != null">
@@ -283,7 +283,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.eve.bookmarks.entitys.po.User">
+    <update id="updateByPrimaryKey" parameterType="com.eve.bookmarks.sys.domain.User">
     update user
     set create_time = #{createTime,jdbcType=TIMESTAMP},
       email = #{email,jdbcType=VARCHAR},
