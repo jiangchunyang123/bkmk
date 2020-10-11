@@ -33,6 +33,9 @@
             <if test="name!=null">
                 and name like concat('%',#{name},'%')
             </if>
+            <if test="barCode!=null">
+                and bar_code = #{barCode}
+            </if>
         </where>
         order by create_time desc
         limit ${offset},${size}
@@ -47,6 +50,9 @@
             <if test="name!=null">
                 and name like concat('%',#{name},'%')
             </if>
+            <if test="barCode!=null and barCode !=''">
+                and bar_code = #{barCode}
+            </if>
         </where>
 
     </select>
@@ -54,16 +60,6 @@
     delete from book
     where id = #{id,jdbcType=INTEGER}
   </delete>
-    <!--    <insert id="insert" parameterType="com.eve.bookmarks.book.domain.po.Book">
-        insert into book (id, `name`, price,
-          author, publisher, page_number,
-          `type`, `process`, remark,
-          create_time, create_user,bar_code)
-        values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{price,jdbcType=REAL},
-          #{author,jdbcType=VARCHAR}, #{publisher,jdbcType=VARCHAR}, #{pageNumber,jdbcType=INTEGER},
-          #{type,jdbcType=TINYINT}, #{process,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},
-          #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{barCode,jdbcType=VARCHAR})
-      </insert>-->
 
     <update id="updateByPrimaryKeySelective" parameterType="com.eve.bookmarks.book.domain.po.Book">
         update book

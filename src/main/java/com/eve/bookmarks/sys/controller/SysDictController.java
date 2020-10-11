@@ -1,10 +1,11 @@
 package com.eve.bookmarks.sys.controller;
 
-import com.eve.bookmarks.book.service.ISysDictService;
 import com.eve.bookmarks.sys.domain.SysDict;
+import com.eve.bookmarks.sys.service.ISysDictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class SysDictController {
 
 
     @GetMapping
-    public List<SysDict> sysDicts() {
-        return sysDictService.dicts();
+    public List<SysDict> sysDicts(@RequestParam(value = "q",required = false)String text) {
+        return sysDictService.dicts(text);
     }
 }

@@ -21,6 +21,9 @@ public class Result {
     public static Result Success(){
         return Success(null);
     }
+    public static Result failed(String message){
+        return new Result(-1,message);
+    }
     /**
      *
      * @param message 消息

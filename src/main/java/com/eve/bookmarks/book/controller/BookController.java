@@ -26,8 +26,9 @@ public class BookController {
 
     @GetMapping
     public Result search(@RequestParam(value = "name", required = false) String name,
+                         @RequestParam(value = "barCode", required = false) String barCode,
                          @RequestParam Integer pageSize,
                          @RequestParam Integer pageNum) {
-        return Result.Success(bookService.search(name, pageSize, pageNum));
+        return Result.Success(bookService.search(name,barCode, pageSize, pageNum));
     }
 }

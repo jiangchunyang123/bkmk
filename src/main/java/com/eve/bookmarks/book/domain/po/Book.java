@@ -1,5 +1,9 @@
 package com.eve.bookmarks.book.domain.po;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,6 +12,7 @@ import java.util.Date;
  */
 
 public class Book implements Serializable {
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -62,6 +67,7 @@ public class Book implements Serializable {
 
     private String barCode;
 
+    @TableField(exist = false)
     private String publisherName;
 
     public String getPublisherName() {

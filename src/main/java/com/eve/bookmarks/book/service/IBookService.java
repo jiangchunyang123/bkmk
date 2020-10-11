@@ -9,5 +9,5 @@ public interface IBookService {
 
     void delete(Integer id);
 
-    Page<Book> search(String name, Integer pageSize, Integer PageNum);
+    Page<Book> search(String name,String barCode, Integer pageSize, Integer PageNum);
 }
