@@ -36,10 +36,11 @@ $(document).ready(function () {
                 alert("暂不支持非中国书籍");
                 return;
             }
-
             let formatStr = val.substr(4, val.length);
             let publisherCode = "";
+            console.log("formatStr="+formatStr);
             for (let dict in publisherDicts) {
+                console.log("dict="+dict);
                 if (formatStr.startsWith(dict)) {
                     result += ("-" + dict);
                     formatStr = formatStr.replace(dict, "");
@@ -52,11 +53,35 @@ $(document).ready(function () {
                 formatStr.slice(formatStr.length - 1));
             book_code.val(result);
             console.log("publishCode="+publisherCode);
-            $("#book_publisher").val(publisherCode).trigger("change");
+
+            var param = {
+                pageNum: 0,
+                pageSize: 10,
+                barCode:result
+            };
+            $.ajax({
+                url: "/api/v1/books",
+                data: param,
+                type: "GET",
+                dataType: "json",
+                success: function (r) {
+                    console.log("r="+JSON.stringify(r));
+                    if(r.data.content !=null&&r.data.content.length>0){
+                        console.log("hello+"+JSON.stringify(r.data.content)+"-->length="+r.data.content.length);
+                        alert("该条形码已存在="+result);
+                        resetForm();
+                        book_code.focus();
+                        return;
+                    }
+                    console.log("hello1"+r.data.content.length);
+                    $("#book_publisher").val(publisherCode).trigger("change");
+                }
+            });
+
         }
     });
 
-    $('#bookScanHistory').DataTable({
+   var bookScannerTable =  $('#bookScanHistory').DataTable({
         paging: true,
         serverSide: true,
         pageLength: 10,
@@ -129,21 +154,23 @@ $(document).ready(function () {
             dataType: "json",
             contentType: "application/json",
             success: function (r) {
-                if (r.success) {
-                    $('#saveSucess').html('操作成功').addClass('alert-success').show().delay(1000).fadeOut();
-                    book_code.val('');
-                    $('#book_name').val('');
-                    $('#book_pageNumber').val('');
-                    $('#book_author').val('');
-                    $("#book_publisher").val('').trigger("change");
-                    $('#bookScanHistory').dataTable("refresh");
+                if (r.state=='0') {
+                    // $('#saveSucess').html('操作成功').addClass('alert-success').show().delay(1000).fadeOut();
+                    resetForm();
+                    bookScannerTable.ajax.reload();
                 } else {
                     alert(r.message);
                 }
             }
         });
     }
-
+    function resetForm(){
+        book_code.val('');
+        $('#book_name').val('');
+        $('#book_pageNumber').val('');
+        $('#book_author').val('');
+        $("#book_publisher").val('').trigger("change");
+    }
 
     $('#bookScannerForm').validate({
         rules: {
@@ -182,9 +209,8 @@ $(document).ready(function () {
             $(element).removeClass('is-invalid');
         },
         submitHandler:function(){
-            alert('hello form');
             submitForm();
-            return false;
+            return true;
         }
     });
 

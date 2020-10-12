@@ -755,7 +755,7 @@ with font-awesome or any other icon font library -->
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" id="bookScannerForm">
+              <form role="form" id="bookScannerForm" onsubmit="return false;">
                 <div class="card-body">
                   <div class="form-group">
                     <label for="book_code">条形码</label>
@@ -783,7 +783,8 @@ with font-awesome or any other icon font library -->
                     </select>
                   </div>
                   <div class="form-group">
-                    <button type="submit" class="form-control btn btn-primary saveBtn submit">提交</button>
+                        <button type="submit" class=" btn btn-primary saveBtn submit">提交</button>
+                       <button type="reset" class=" btn btn-cancel">重置</button>
                   </div>
                 </div>
                 <!-- /.card-body -->
